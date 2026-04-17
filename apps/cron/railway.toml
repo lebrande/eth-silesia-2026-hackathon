@@ -1,0 +1,6 @@
+[build]
+buildCommand = "pnpm -F cron build"
+
+[deploy]
+cronSchedule = "*/5 * * * *"
+startCommand = "pnpm -F cron start"

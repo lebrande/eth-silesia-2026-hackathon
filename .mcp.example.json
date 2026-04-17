@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "langsmith": {
+      "command": "uvx",
+      "args": ["langsmith-mcp-server"],
+      "env": {
+        "LANGSMITH_API_KEY": "your_langsmith_api_key_here",
+        "LANGSMITH_ENDPOINT": "https://eu.api.smith.langchain.com"
+      }
+    }
+  }
+}

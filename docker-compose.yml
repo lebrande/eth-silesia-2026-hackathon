@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ileopard-services
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  prestashop:
+    image: prestashop/prestashop:8-apache
+    ports:
+      - "8080:80"
+    environment:
+      DB_SERVER: prestashop-db
+      DB_NAME: prestashop
+      DB_USER: root
+      DB_PASSWD: root
+      PS_INSTALL_AUTO: "1"
+      PS_DOMAIN: localhost:8080
+      ADMIN_MAIL: admin@test.com
+      ADMIN_PASSWD: admin123456
+    volumes:
+      - ./packages/ileopardchat:/var/www/html/modules/ileopardchat
+    depends_on:
+      - prestashop-db
+    profiles:
+      - prestashop
+
+  prestashop-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: prestashop
+    volumes:
+      - prestashop-dbdata:/var/lib/mysql
+    profiles:
+      - prestashop
+
+volumes:
+  pgdata:
+  prestashop-dbdata:

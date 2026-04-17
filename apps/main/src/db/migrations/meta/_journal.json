@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772725605508,
+      "tag": "0000_melted_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774269825961,
+      "tag": "0001_add_chat_users_and_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774272367374,
+      "tag": "0002_add_session_message_count",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776252579112,
+      "tag": "0003_brown_the_twelve",
+      "breakpoints": true
+    }
+  ]
+}

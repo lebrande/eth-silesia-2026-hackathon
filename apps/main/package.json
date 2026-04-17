@@ -1,0 +1,52 @@
+{
+  "name": "main",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node .next/standalone/apps/main/server.js",
+    "lint": "eslint",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push",
+    "db:create-migration": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed-user": "tsx scripts/seed-user.ts",
+    "test:chat": "tsx scripts/test-chat.ts",
+    "test:chat-batch": "tsx scripts/test-chat-batch.ts",
+    "test:auth-batch": "tsx scripts/test-auth-batch.ts",
+    "test:verified-batch": "tsx scripts/test-verified-batch.ts"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.1.30",
+    "@langchain/langgraph": "^1.2.0",
+    "@langchain/langgraph-checkpoint-postgres": "^1.0.1",
+    "@langchain/openai": "^1.2.12",
+    "@tailwindcss/postcss": "^4.1.18",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.1",
+    "langchain": "^1.2.29",
+    "next": "16.1.4",
+    "next-auth": "5.0.0-beta.30",
+    "pg": "^8.20.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwindcss": "^4.1.18",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^20.19.30",
+    "@types/pg": "^8.18.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.8",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.4",
+    "raw-loader": "^4.0.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ileopard-services",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -F main dev",
+    "build": "pnpm -F main build",
+    "start": "pnpm -F main start"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
