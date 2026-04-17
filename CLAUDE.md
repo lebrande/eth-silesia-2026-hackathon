@@ -2,7 +2,7 @@
 
 ## Projekt
 
-Ileopard - hurtownia kosmetyków z e-commerce (PrestaShop). AI agent (chatbot) do obsługi klientów sklepu, komunikacja przez API z LangGraph. Monorepo z pnpm workspaces. Deploy na Railway.
+AI agent (chatbot) oparty na LangGraph. Monorepo z pnpm workspaces. Deploy na Railway.
 
 ## Zasady kodu
 
@@ -153,18 +153,6 @@ pnpm -F main db:migrate               # run migrations (prod)
 pnpm -F main db:studio                # Drizzle Studio
 pnpm -F main db:seed-user             # create admin user
 ```
-
-## PrestaShop (dev)
-
-```bash
-docker compose --profile prestashop up -d    # start PrestaShop + MySQL
-./scripts/prestashop-setup.sh                # rename admin → admin-dev
-```
-
-- Admin: http://localhost:8080/admin-dev/ (admin@test.com / admin123456)
-- Frontend: http://localhost:8080/
-- Chat widget (debug): http://localhost:8080/?ileopard_debug=1
-- Moduł zamontowany z `packages/ileopardchat/` — zmiany w plikach widoczne od razu
 
 ## LangSmith MCP
 

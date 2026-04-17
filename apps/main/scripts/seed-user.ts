@@ -4,7 +4,7 @@ import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { users } from "../src/db/schema";
 
-const email = process.argv[2] || "admin@ileopard.pl";
+const email = process.argv[2] || "admin@eth-silesia.local";
 const password = process.argv[3] || "admin123";
 
 async function main() {
