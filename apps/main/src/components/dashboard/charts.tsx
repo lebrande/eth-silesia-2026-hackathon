@@ -40,8 +40,8 @@ export function ConversationsChart({ data }: { data: KpiTimeseriesPoint[] }) {
       <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
         <defs>
           <linearGradient id="convGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="oklch(0.55 0.22 280)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="oklch(0.55 0.22 280)" stopOpacity={0} />
+            <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid vertical={false} stroke="oklch(0.92 0.01 260)" />
@@ -63,7 +63,7 @@ export function ConversationsChart({ data }: { data: KpiTimeseriesPoint[] }) {
         <Area
           type="monotone"
           dataKey="conversations"
-          stroke="oklch(0.55 0.22 280)"
+          stroke="var(--color-primary)"
           strokeWidth={2}
           fill="url(#convGrad)"
           dot={false}
