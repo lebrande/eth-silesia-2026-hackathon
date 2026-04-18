@@ -5,6 +5,7 @@ import { runToolCallingLoop } from "@/lib/tool-calling.shared";
 import type { StructuredToolInterface } from "@langchain/core/tools";
 import type { ChatStateType } from "../../../chat.state";
 import { MAX_HISTORY_MESSAGES } from "../../../chat.constants";
+import { getConsumptionTimelineTool } from "../../../tools";
 
 export const verifiedAgentEnds: string[] = [];
 
@@ -13,8 +14,7 @@ const getSystemPrompt = getAgentPrompt(
 );
 
 // Tools available AFTER successful SMS verification.
-// Add domain-specific tools here (e.g. getConsumptionTimeline, compareTariffs).
-const tools: StructuredToolInterface[] = [];
+const tools: StructuredToolInterface[] = [getConsumptionTimelineTool];
 const llm = createLLM().bindTools(tools);
 
 export async function verifiedAgentNode(
