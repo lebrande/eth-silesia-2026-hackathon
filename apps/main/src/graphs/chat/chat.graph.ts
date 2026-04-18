@@ -1,4 +1,5 @@
 import { StateGraph, START } from "@langchain/langgraph";
+import { HumanMessage } from "@langchain/core/messages";
 import { getCheckpointSaver } from "@/lib/server/checkpoint.server";
 import { mapMessages } from "./chat.constants";
 import { ChatState } from "./chat.state";
@@ -37,7 +38,7 @@ export async function invokeChatGraph(input: {
   const app = graph.compile({ checkpointer });
 
   const result = await app.invoke(
-    { messages: [{ role: "user", content: input.message }] },
+    { messages: [new HumanMessage(input.message)] },
     { configurable: { thread_id: input.threadId } },
   );
 
