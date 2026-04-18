@@ -434,3 +434,38 @@ Do zrobienia przy okazji dokumentowania — nie blokuje frontu ani Fazy 5.
 ### Następny krok
 
 **Faza 5 (opcjonalnie)** — wzbogacenie mocków do realistycznych danych (36 miesięcy timeline, pełne stawki per strefa, realna struktura umowy Tauron). Trzy niezależne pliki → idealna kandydatka na równoległe subagenty.
+
+---
+
+## Status sesji 2026-04-18 (cd.) — notatka po Fazie 5
+
+### Faza 5 — ZAKOŃCZONA (zakres minimalny)
+
+Zastosowana zasada „nie dodawaj zbyt dużo jeśli nie trzeba" (YAGNI). Dotknięty **tylko jeden plik** — pozostałe dwa mocki są wystarczające w swojej obecnej formie.
+
+**Zmienione:**
+
+- `tools/get-consumption-timeline/get-consumption-timeline.mock.ts` — rozszerzone z 4 do 12 miesięcy (`2024-11` → `2025-10`) z realistyczną sezonowością (zimowe szczyty 380–420 kWh, letnie dołki 215–240 kWh, skok od września 2025 przy uruchomieniu pompy ciepła do 420/640 kWh). Tekst anomalii odnosi się teraz do średniej z 12 miesięcy (~305 kWh) zamiast do zgadywanego „+78%". Koszty spójne z efektywną stawką ~0,70 PLN/kWh (mrożenie cen przez 2025).
+
+**Świadomie NIE zmieniane:**
+
+- `compare-tariffs.mock.ts` — 3 taryfy z `annualCostPLN` + `deltaPct` + `recommended` to wszystko, czego potrzebuje widget i testy. Dokładanie stawek per strefa / breakeven wymaga rozszerzenia typu — poza zakresem Fazy 5 bez zmian API.
+- `prepare-contract-draft.mock.ts` — 5 sekcji realistycznej umowy Tauron jest wystarczające dla demo. URL do QR mObywatela wymagałby rozszerzenia typu `ContractSigningData` — celowo poza zakresem (QR można dodać po stronie FE jako stały asset demo).
+
+Plan pierwotnie zakładał 36 miesięcy + breakdown dzień/noc/weekend dla timeline — **odrzucone**: 12 miesięcy wystarcza do pokazania skoku (Anna vs pompa ciepła), a breakdown stref wymagałby zmiany typu.
+
+### Testy — stan po Fazie 5
+
+`pnpm -F main test:demo` → **15/15 pass** (bez regresji).
+
+### Pliki ZMIENIONE w Fazie 5
+
+- `apps/main/src/graphs/chat/tools/get-consumption-timeline/get-consumption-timeline.mock.ts` (12 miesięcy + nowy opis anomalii)
+
+### Następny krok
+
+Implementacja backendowa planu zakończona (Fazy 1–5). Otwarte długi:
+
+1. **Aktualizacja `chat.graph.md`** — diagram Mermaid nadal pokazuje `escalation` + `escalateToHuman`. Do uzupełnienia listą 3 tooli + usunięcia escalation.
+2. **Frontend renderery widgetów** — 3 komponenty (`ConsumptionTimeline`, `TariffComparator`, `ContractSigning`) + `WidgetRenderer` ze switchem na `payload.type`. Typy są gotowe do importu z `@/graphs/chat/chat.widgets.shared`.
+3. **Opcjonalnie** — rozszerzenie typów (np. QR URL w `ContractSigningData`, stawki per strefa w `TariffComparatorData`) jeśli FE zgłosi taką potrzebę.
