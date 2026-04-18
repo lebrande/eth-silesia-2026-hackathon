@@ -1,9 +1,9 @@
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { users } from "@/db/schema";
+
+// Hardcoded admin credentials (hackathon project)
+const ADMIN_EMAIL = "admin@ethsilesia.pl";
+const ADMIN_PASSWORD = "admin";
 
 const config: NextAuthConfig = {
   session: {
@@ -24,20 +24,11 @@ const config: NextAuthConfig = {
         const email = credentials?.email as string;
         const password = credentials?.password as string;
 
-        if (!email || !password) return null;
+        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+          return { id: "admin", name: "Admin", email: ADMIN_EMAIL };
+        }
 
-        const [user] = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, email))
-          .limit(1);
-
-        if (!user?.passwordHash) return null;
-
-        const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) return null;
-
-        return { id: user.id, name: user.name, email: user.email };
+        return null;
       },
     }),
   ],
