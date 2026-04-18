@@ -29,6 +29,13 @@
       "when": 1776252579112,
       "tag": "0003_brown_the_twelve",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776505865282,
+      "tag": "0004_add_faq_and_message_flags",
+      "breakpoints": true
     }
   ]
 }
