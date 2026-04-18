@@ -1,0 +1,16 @@
+{
+  "name": "elevenlabs-silesian-test",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node generate.mjs",
+    "upload-dict": "node upload-dict.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

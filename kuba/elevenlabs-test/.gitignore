@@ -1,0 +1,5 @@
+node_modules/
+out/
+.env
+voice-sample/raw.*
+voice-sample/sample.*
