@@ -6,11 +6,7 @@ const SMS_OVERRIDE_NUMBER = null;
 // ---------------------------------------------------------------------------
 
 // --- Whitelist: only these numbers can receive SMS ---
-const SMS_ALLOWED_NUMBERS: string[] = [
-  "48889930616",
-  "48517703749",
-  "48731044940",
-];
+const SMS_ALLOWED_NUMBERS: string[] = ["889930616", "517703749", "731044940"];
 // ------------------------------------------------------
 
 interface BulkGateSuccess {
