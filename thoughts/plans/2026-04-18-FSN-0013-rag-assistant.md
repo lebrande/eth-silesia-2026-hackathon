@@ -63,6 +63,7 @@ Domyka user story B3 z `thoughts/prd.md` i zamyka ticket `thoughts/tickets/czare
 Jedna faza — wszystkie zmiany wdrażane razem (zgodnie z preferencją użytkownika). Strategia „bottom-up": najpierw infra (docker, ensure-tables, schema), potem helper/DAL, potem skrypt, potem tool i prompt. Kolejność ma znaczenie tylko dla lokalnego testu (bez docker-swap `CREATE EXTENSION` padnie), ale każdy commit zostawia repo w stanie kompilującym się.
 
 Minimalna inwazyjność:
+
 - Nie tykamy `faq.action.ts` / `faq.tool.ts` (poza dodaniem nowego narzędzia) — hook siedzi w DAL.
 - Nie ruszamy drizzle-kit migrations.
 - Keyword `search_faq` zostaje bez zmian (fallback).
@@ -153,7 +154,7 @@ Eksportujemy `EMBEDDING_MODEL` / `EMBEDDING_DIMENSIONS` żeby skrypt i semantic 
 1. Import `sql` i `createEmbeddings`.
 2. Nowy helper `async function updateFaqEmbedding(id: string, text: string): Promise<void>`:
    - `createEmbeddings().embedQuery(text)` → `number[]` (długość 1536).
-   - `db.execute(sql\`UPDATE faq_entries SET embedding = ${"[" + vec.join(",") + "]"}::vector WHERE id = ${id}\`)` (pgvector akceptuje literał `'[0.1, 0.2, ...]'::vector`).
+   - `db.execute(sql\`UPDATE faq_entries SET embedding = ${"[" + vec.join(",") + "]"}::vector WHERE id = ${id}\`)`(pgvector akceptuje literał`'[0.1, 0.2, ...]'::vector`).
    - `console.warn("[faq-embedding] …")` w `catch`, re-throw NIE, tylko log.
 3. W `createFaq`:
    - po `const [row] = await db.insert(...).returning()` — `await updateFaqEmbedding(row.id, \`${norm.question}\n${norm.answer}\`).catch((err) => console.warn(...))`.
@@ -181,7 +182,7 @@ Sygnatura `createFaq` / `updateFaq` nie zmienia się (return type bez zmian). Wp
   - `ALTER TABLE faq_entries ADD COLUMN IF NOT EXISTS embedding vector(1536)`
   - `CREATE INDEX IF NOT EXISTS faq_entries_embedding_idx ON faq_entries USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)`
 - Fetch rows: `SELECT id, question, answer FROM faq_entries WHERE ${force ? 'TRUE' : 'embedding IS NULL'} ORDER BY created_at ASC`.
-- Dla każdego wiersza sekwencyjnie: `embedQuery(\`${question}\n${answer}\`)` → `UPDATE ... SET embedding = $1::vector`.
+- Dla każdego wiersza sekwencyjnie: `embedQuery(\`${question}\n${answer}\`)`→`UPDATE ... SET embedding = $1::vector`.
 - Log co 5 wpisów: `console.log("[embed-faqs] 5/23 done")`.
 - `pool.end()` + `process.exit(0)`; `catch(err => { console.error(err); process.exit(1) })`.
 - Na końcu krótkie podsumowanie: `\`✓ Embedowanych: ${done} / ${total}.\``.

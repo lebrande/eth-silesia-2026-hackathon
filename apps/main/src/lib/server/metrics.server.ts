@@ -17,7 +17,6 @@ import {
   mergeLanguagesWithMock,
   mergeProblematicWithMock,
   mergeTimeseriesWithMock,
-  mergeWidgetKindsWithMock,
 } from "@/lib/server/dashboard-mocks";
 import type {
   KpiTimeseriesPoint,
@@ -157,10 +156,10 @@ export async function buildDashboard(): Promise<DashboardSnapshot> {
   const escalationRate7d =
     conversations7dMerged > 0 ? escalated7dMerged / conversations7dMerged : 0;
 
-  const widgetTopKinds = mergeWidgetKindsWithMock(
-    countWidgetKinds(
-      widgetSpecs.map((r) => r.spec).filter((s): s is WidgetSpec => !!s),
-    ),
+  // Primitives liczymy wyłącznie z realnych widget_definitions (zgodnie z
+  // /app/tools) — bez mergowania z mockiem.
+  const widgetTopKinds = countWidgetKinds(
+    widgetSpecs.map((r) => r.spec).filter((s): s is WidgetSpec => !!s),
   );
 
   const languages = await db
@@ -229,8 +228,10 @@ export async function buildDashboard(): Promise<DashboardSnapshot> {
     totalFlags: totalFlagsRow.v + DASHBOARD_COUNT_MOCKS.totalFlags,
     faqCount: faqCount.v,
     totalUsers: 0,
-    widgetCount: widgetTotal.v + DASHBOARD_COUNT_MOCKS.widgetCount,
-    widgetsCreated30d: widgetsNew30d.v + DASHBOARD_COUNT_MOCKS.widgetsCreated30d,
+    // KPI „Widgety agenta" musi zgadzać się 1:1 z /app/tools, więc NIE
+    // dodajemy tutaj mocków — czytamy wprost z widget_definitions.
+    widgetCount: widgetTotal.v,
+    widgetsCreated30d: widgetsNew30d.v,
     widgetTopKinds,
     timeseries,
     languages: mergeLanguagesWithMock(

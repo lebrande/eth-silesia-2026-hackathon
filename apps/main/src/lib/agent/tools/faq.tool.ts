@@ -193,14 +193,8 @@ export function createFaqTools(_ctx: BackofficeAgentContext) {
           .string()
           .optional()
           .describe("Kategoria (domyślnie 'Ogólne')"),
-        language: z
-          .string()
-          .optional()
-          .describe("Kod języka, domyślnie 'pl'"),
-        source: z
-          .string()
-          .optional()
-          .describe("Opcjonalne źródło / odsyłacz"),
+        language: z.string().optional().describe("Kod języka, domyślnie 'pl'"),
+        source: z.string().optional().describe("Opcjonalne źródło / odsyłacz"),
       }),
     },
   );

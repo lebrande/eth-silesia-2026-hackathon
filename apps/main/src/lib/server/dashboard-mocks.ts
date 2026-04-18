@@ -12,7 +12,6 @@ import type {
   KpiTimeseriesPoint,
   ProblematicQuestion,
 } from "@/lib/types";
-import type { WidgetKindUsage } from "@/lib/server/metrics.server";
 
 const DAY_MS = 24 * 3600 * 1000;
 
@@ -26,8 +25,9 @@ export const DASHBOARD_COUNT_MOCKS = {
   blocked: 3,
   verified: 98,
   totalFlags: 19,
-  widgetCount: 4,
-  widgetsCreated30d: 2,
+  // widgetCount / widgetsCreated30d celowo pominięte — KPI „Widgety agenta"
+  // ma pokrywać się z listą na /app/tools, więc liczymy tylko realne rekordy
+  // z widget_definitions (patrz metrics.server.ts).
 } as const;
 
 /**
@@ -118,33 +118,6 @@ export function mergeLanguagesWithMock(
     .map(([language, count]) => ({ language, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
-}
-
-export const MOCK_WIDGET_KINDS: WidgetKindUsage[] = [
-  { kind: "paragraph", count: 32 },
-  { kind: "header", count: 18 },
-  { kind: "list", count: 14 },
-  { kind: "keyValue", count: 11 },
-  { kind: "actions", count: 9 },
-  { kind: "table", count: 7 },
-  { kind: "badge", count: 6 },
-  { kind: "alert", count: 5 },
-  { kind: "chart", count: 4 },
-  { kind: "columns", count: 3 },
-  { kind: "formField", count: 3 },
-];
-
-export function mergeWidgetKindsWithMock(
-  real: WidgetKindUsage[],
-): WidgetKindUsage[] {
-  const map = new Map<string, number>();
-  for (const r of real) map.set(r.kind, (map.get(r.kind) ?? 0) + r.count);
-  for (const m of MOCK_WIDGET_KINDS) {
-    map.set(m.kind, (map.get(m.kind) ?? 0) + m.count);
-  }
-  return Array.from(map.entries())
-    .map(([kind, count]) => ({ kind, count }))
-    .sort((a, b) => b.count - a.count);
 }
 
 /**
