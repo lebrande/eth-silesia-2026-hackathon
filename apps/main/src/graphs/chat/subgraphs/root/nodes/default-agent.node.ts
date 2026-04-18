@@ -1,7 +1,7 @@
 import { Command, END } from "@langchain/langgraph";
 import { z } from "zod";
 import { createLLM } from "@/lib/server/llm.server";
-import { getAgentPrompt } from "@/lib/prompts.shared";
+import { getAgentPrompt, withSilesianMode } from "@/lib/prompts.shared";
 import type { ChatStateType } from "../../../chat.state";
 import { MAX_HISTORY_MESSAGES } from "../../../chat.constants";
 
@@ -36,7 +36,7 @@ const getSystemPrompt = getAgentPrompt(
 );
 
 export async function defaultAgentNode(state: ChatStateType): Promise<Command> {
-  const systemPrompt = getSystemPrompt();
+  const systemPrompt = withSilesianMode(getSystemPrompt(), state.silesianMode);
 
   const llm = createLLM().withStructuredOutput(DefaultAgentSchema);
   const recentMessages = state.messages.slice(-MAX_HISTORY_MESSAGES);

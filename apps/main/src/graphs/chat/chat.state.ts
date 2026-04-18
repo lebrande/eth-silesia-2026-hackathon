@@ -23,6 +23,10 @@ export const ChatState = z.object({
   // Verified user
   verifiedPhone: z.string().optional(),
 
+  // Silesian dialect mode — humorous accent toggle. Only applies when the
+  // conversation is in Polish. Flipped by keyword triggers detected in gate.
+  silesianMode: z.boolean().optional(),
+
   // Widgets emitted by tools — append reducer, accumulates across the session
   widgets: z
     .custom<WidgetPayload[]>()

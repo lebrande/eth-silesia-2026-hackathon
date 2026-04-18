@@ -34,6 +34,7 @@ export function formatState(result: GraphResult): string {
   if (result.authStep) parts.push(`authStep=${result.authStep}`);
   if (result.authCode) parts.push(`authCode=${result.authCode}`);
   if (result.verifiedPhone) parts.push(`verified=${result.verifiedPhone}`);
+  if (result.silesianMode) parts.push("silesian");
   if (result.widgets && result.widgets.length > 0) {
     parts.push(`widgets=${result.widgets.map((w) => w.type).join(",")}`);
   }

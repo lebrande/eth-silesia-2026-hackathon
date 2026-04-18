@@ -34,6 +34,10 @@ const rawAgentShared = loadPrompt(
   "chat/subgraphs/root/prompts/agent-shared.prompt.md",
 );
 
+const rawSilesianAddendum = loadPrompt(
+  "chat/subgraphs/root/prompts/silesian.prompt.md",
+);
+
 export function getAgentPrompt(promptPath: string): () => string {
   const rawPrompt = loadPrompt(promptPath);
 
@@ -41,4 +45,11 @@ export function getAgentPrompt(promptPath: string): () => string {
     const agentShared = injectVariables(rawAgentShared, getDateTimeVariables());
     return injectVariables(rawPrompt, { agentShared });
   };
+}
+
+export function withSilesianMode(
+  prompt: string,
+  silesianMode: boolean | undefined,
+): string {
+  return silesianMode ? `${prompt}\n\n${rawSilesianAddendum}` : prompt;
 }

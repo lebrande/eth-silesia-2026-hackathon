@@ -1,6 +1,6 @@
 import type { Command } from "@langchain/langgraph";
 import { createLLM } from "@/lib/server/llm.server";
-import { getAgentPrompt } from "@/lib/prompts.shared";
+import { getAgentPrompt, withSilesianMode } from "@/lib/prompts.shared";
 import { runToolCallingLoop } from "@/lib/tool-calling.shared";
 import type { StructuredToolInterface } from "@langchain/core/tools";
 import type { ChatStateType } from "../../../chat.state";
@@ -28,8 +28,9 @@ const llm = createLLM().bindTools(tools);
 export async function verifiedAgentNode(
   state: ChatStateType,
 ): Promise<Command> {
+  const systemPrompt = withSilesianMode(getSystemPrompt(), state.silesianMode);
   return runToolCallingLoop(llm, tools, [
-    { role: "system", content: getSystemPrompt() },
+    { role: "system", content: systemPrompt },
     ...state.messages.slice(-MAX_HISTORY_MESSAGES),
   ]);
 }

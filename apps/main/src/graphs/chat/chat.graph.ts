@@ -56,6 +56,7 @@ export async function invokeChatGraph(input: {
     authCode: result.authCode ?? null,
     verifiedPhone: result.verifiedPhone ?? null,
     language: result.language ?? null,
+    silesianMode: result.silesianMode ?? false,
     widgets: result.widgets ?? [],
     history,
   };
