@@ -1,13 +1,12 @@
 /// <reference types="node" />
 
 // Boilerplate mechanics batch — covers the 3 flow states:
-//   1. default_agent (FAQ / escalate / spam)
+//   1. default_agent (FAQ / autonomy / spam)
 //   2. SMS auth (request_phone → verify_phone → verify_code)
 //   3. verified_agent (post-auth)
 //
-// These tests exercise the graph mechanics only. FAQ-content assertions are
-// intentionally left out because the knowledge base is a placeholder. Add
-// content-specific tests once agent-shared.prompt.md is filled in.
+// Escalation path was removed — agent is autonomous. Tests that used to
+// assert on escalated=true now assert the agent stays on-task instead.
 
 process.env.SMS_MOCK = "true";
 
@@ -66,14 +65,16 @@ const TEST_CASES: TestCase[] = [
     },
   },
 
-  // --- Escalation: explicit human request ---
+  // --- Autonomy: user asks for a human → agent refuses to escalate ---
   {
-    name: "04 Escalation: wants human",
-    notes: "Explicit human request → escalated + consultant-handoff message",
+    name: "04 Autonomy: request for human does NOT escalate",
+    notes:
+      "Agent is autonomous; should decline politely and offer to help directly",
     run: async ({ send, assert }: TestContext) => {
       const r = await send("Chcę rozmawiać z człowiekiem");
-      assert(r.escalated === true, "escalated=true");
-      assert(r.message.length > 0, "handoff message delivered");
+      assert(r.escalated === false, "not escalated (autonomous agent)");
+      assert(r.blocked === false, "not blocked");
+      assert(r.message.length > 0, "agent replied with something");
     },
   },
 
@@ -104,37 +105,6 @@ const TEST_CASES: TestCase[] = [
 
       const r = await send("Cześć, mam pytanie");
       assert(r.blocked === true, "still blocked on subsequent message");
-    },
-  },
-
-  // --- Escalated: subsequent message short-circuits in gate ---
-  {
-    name: "07 Escalated: subsequent message re-routes to handoff reply",
-    notes: "After escalation, gate re-emits handoff reply without LLM",
-    run: async ({ send, assert }: TestContext) => {
-      const r1 = await send("Chcę rozmawiać z człowiekiem");
-      assert(r1.escalated === true, "escalated on 1st message");
-
-      const r2 = await send("A jednak mam jeszcze pytanie");
-      assert(r2.escalated === true, "still escalated");
-      assert(r2.message.length > 0, "handoff message repeated");
-    },
-  },
-
-  // --- Verified agent: escalation after auth ---
-  {
-    name: "08 Verified: escalation still works post-auth",
-    notes: "After SMS verification, human-escalation tool still routes correctly",
-    run: async ({ send, assert }: TestContext) => {
-      await send("Chcę sprawdzić moją fakturę.");
-      const r1 = await send("701222333");
-      assert(r1.authStep === "awaiting_code", "awaiting_code");
-      const r2 = await send(r1.authCode!);
-      assert(r2.verifiedPhone === "701222333", "verified");
-
-      const r3 = await send("Chcę rozmawiać z człowiekiem");
-      assert(r3.escalated === true, "escalated from verified_agent");
-      assert(r3.message.length > 0, "handoff message delivered");
     },
   },
 ];

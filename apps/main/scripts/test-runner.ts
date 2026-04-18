@@ -30,11 +30,13 @@ const SEPARATOR = "\u2500".repeat(60);
 export function formatState(result: GraphResult): string {
   const parts: string[] = [];
 
-  if (result.escalated) parts.push("escalated");
   if (result.blocked) parts.push("blocked");
   if (result.authStep) parts.push(`authStep=${result.authStep}`);
   if (result.authCode) parts.push(`authCode=${result.authCode}`);
   if (result.verifiedPhone) parts.push(`verified=${result.verifiedPhone}`);
+  if (result.widgets && result.widgets.length > 0) {
+    parts.push(`widgets=${result.widgets.map((w) => w.type).join(",")}`);
+  }
 
   return parts.length > 0 ? parts.join(", ") : "default";
 }

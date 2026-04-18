@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { BaseMessage } from "@langchain/core/messages";
 import { MessagesZodMeta } from "@langchain/langgraph";
 import { registry } from "@langchain/langgraph/zod";
+import type { WidgetPayload } from "./chat.widgets.shared";
 
 export const ChatState = z.object({
   messages: z
@@ -9,7 +10,6 @@ export const ChatState = z.object({
     .default(() => [])
     .register(registry, MessagesZodMeta),
   language: z.string().optional(),
-  escalated: z.boolean().optional(),
   blocked: z.boolean().optional(),
   spamCounter: z.number().optional(),
 
@@ -22,6 +22,20 @@ export const ChatState = z.object({
 
   // Verified user
   verifiedPhone: z.string().optional(),
+
+  // Widgets emitted by tools — append reducer, accumulates across the session
+  widgets: z
+    .custom<WidgetPayload[]>()
+    .default(() => [])
+    .register(registry, {
+      reducer: {
+        fn: (
+          prev: WidgetPayload[] | undefined,
+          next: WidgetPayload[] | undefined,
+        ) => [...(prev ?? []), ...(next ?? [])],
+      },
+      default: () => [],
+    }),
 });
 
 export type ChatStateType = z.infer<typeof ChatState>;

@@ -17,6 +17,7 @@
     "db:ensure-tables": "tsx scripts/ensure-tables.ts",
     "test:chat": "tsx scripts/test-chat.ts",
     "test:batch": "tsx scripts/test-batch.ts",
+    "test:demo": "tsx scripts/test-demo.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

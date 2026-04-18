@@ -5,17 +5,16 @@ import { runToolCallingLoop } from "@/lib/tool-calling.shared";
 import type { StructuredToolInterface } from "@langchain/core/tools";
 import type { ChatStateType } from "../../../chat.state";
 import { MAX_HISTORY_MESSAGES } from "../../../chat.constants";
-import { escalateToHumanTool } from "../../../tools";
 
-export const verifiedAgentEnds = ["escalation"];
+export const verifiedAgentEnds: string[] = [];
 
 const getSystemPrompt = getAgentPrompt(
   "chat/subgraphs/root/prompts/verified-agent.prompt.md",
 );
 
 // Tools available AFTER successful SMS verification.
-// Add domain-specific tools here (e.g. getMyInvoices, updateContract).
-const tools: StructuredToolInterface[] = [escalateToHumanTool];
+// Add domain-specific tools here (e.g. getConsumptionTimeline, compareTariffs).
+const tools: StructuredToolInterface[] = [];
 const llm = createLLM().bindTools(tools);
 
 export async function verifiedAgentNode(

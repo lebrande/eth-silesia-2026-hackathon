@@ -7,7 +7,7 @@ import { MAX_HISTORY_MESSAGES } from "../../../chat.constants";
 
 const DefaultAgentSchema = z.object({
   action: z
-    .enum(["answer", "escalate", "request_auth", "spam"])
+    .enum(["answer", "request_auth", "spam"])
     .describe("The action to take based on the customer's message"),
   language: z
     .string()
@@ -23,7 +23,6 @@ const DefaultAgentSchema = z.object({
 
 const ROUTE_MAP: Record<string, string> = {
   answer: END,
-  escalate: "escalation",
   request_auth: "request_phone",
   spam: "spam",
 };
@@ -59,7 +58,7 @@ export async function defaultAgentNode(state: ChatStateType): Promise<Command> {
     });
   }
 
-  // escalate / request_auth / spam — route, update language only
+  // request_auth / spam — route, update language only
   return new Command({
     update: { language: result.language },
     goto,

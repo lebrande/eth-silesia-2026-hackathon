@@ -188,3 +188,101 @@ Każda faza dodaje do promptu `verified_agent` regułę w stylu „ZAWSZE wołaj
 ## Start
 
 Po akceptacji tego planu — rozpoczynamy **Fazę 1**. Po jej zakończeniu zatrzymujemy się, przeglądasz diff, iterujemy jeśli potrzeba, dopiero wtedy Faza 2.
+
+---
+
+## Status sesji 2026-04-18 — notatka dla kolejnego agenta
+
+### Faza 1 — ZAKOŃCZONA
+
+Zaimplementowane dokładnie wg planu:
+
+- 3 foldery per tool z plikami `*.types.ts` (tylko typy, bez mocków ani `*.tool.ts`)
+- `chat.widgets.shared.ts` z `WidgetPayload` discriminated union i re-eksportami `*Data`
+- `widgets` w `ChatState` z append-reducerem (`(prev, next) => [...prev, ...next]`), default `[]`
+- `widgets: result.widgets ?? []` w return z `invokeChatGraph`
+
+### Decyzja architektoniczna poza pierwotnym planem — usunięta ścieżka escalation
+
+Użytkownik zdecydował, że agent ma być w pełni autonomiczny („futurystyczny demo, bez handoffu do człowieka"). Dlatego **przed** rozpoczęciem Fazy 2 całkowicie usunięta została ścieżka escalation:
+
+- Usunięte pliki: `tools/escalate-to-human.tool.ts`, `subgraphs/root/nodes/escalation.node.ts`
+- Usunięta wartość `"escalate"` z enum `DefaultAgentSchema.action` (pozostało: `answer | request_auth | spam`)
+- Usunięte pole `escalated` z `ChatState` i z gate'a
+- `invokeChatGraph` zwraca `escalated: false` jako stałą — pozostawione wyłącznie dla kompatybilności z istniejącym kodem DB/dashboard (`chat_sessions.escalated`, `metrics.server.ts`, `conversations` UI). Ten kod nie był modyfikowany — działa, tylko wartość zawsze jest `false`.
+- Prompty (`default-agent.prompt.md`, `verified-agent.prompt.md`) zawierają twardą regułę: agent NIGDY nie przekazuje do konsultanta, grzecznie odmawia i oferuje pomoc bezpośrednią.
+
+**Konsekwencja dla Faz 2-4:** `verified_agent` obecnie ma `tools: StructuredToolInterface[] = []`. Każda kolejna faza dokłada dokładnie jeden tool do tej tablicy.
+
+### Testy — baseline TDD
+
+Dodane dwa suite'y w `apps/main/scripts/` (uruchomienie: `pnpm -F main test:batch`, `pnpm -F main test:demo`):
+
+- **`test-batch.ts`** — 6 testów mechaniki (auth happy path, błędny kod, format telefonu, autonomia wobec prośby o człowieka, spam counter, blocked short-circuit). **6/6 przechodzi.**
+- **`test-demo.ts`** — 15 testów mirrorujących `docs/04_demo_script.md` + warianty sformułowań + off-topic. **9/15 przechodzi** po Fazie 1.
+
+Testy fail'ujące to TDD red phase — zaświecą się zielono w miarę wdrażania kolejnych faz:
+
+| Test | Odblokowuje faza |
+| --- | --- |
+| `10` — bills → `ConsumptionTimeline` | **Faza 2** |
+| `11`, `12` — devices / „pokaż opcje" → `TariffComparator` | **Faza 3** |
+| `13`, `14` — „daj G13" / „biorę G12" → `ContractSigning` | **Faza 4** |
+| `15` — akumulacja 3 widgetów w sesji | **Fazy 2+3+4** |
+
+### Konwencja asercji na payload widgetu
+
+W `test-demo.ts` jest helper `findWidget<T>(widgets, "ConsumptionTimeline")`, który robi type narrowing przez discriminated union — po zawężeniu `w.data` jest silnie otypowany (np. `ConsumptionTimelineData`). Używaj tego helpera zamiast ręcznych filtrów. Przykład:
+
+```ts
+const compare = findWidget(r.widgets, "TariffComparator");
+assert(!!compare, "TariffComparator widget emitted");
+if (compare) {
+  assert(compare.data.tariffs.length === 3, "compares exactly 3 tariffs");
+  assert(compare.data.tariffs.filter(t => t.recommended).length === 1, "exactly one recommended");
+}
+```
+
+### Jak rozszerzać testy po każdej fazie
+
+**Po Fazie 2** — test `10` powinien zapalić się zielono bez dodatkowej pracy. Dodaj 1-2 warianty sformułowań dla triggera `getConsumptionTimeline` (np. „pokaż moje zużycie", „co się stało z moim rachunkiem"). Każdy wariant = osobny test case.
+
+**Po Fazie 3** — testy `11`, `12` zielone. Opcjonalnie dodaj asercje: `delta` liczony względem G11, `recommended` flaga ustawiona dokładnie na jednej taryfie.
+
+**Po Fazie 4** — testy `13`, `14` zielone. Opcjonalnie dodaj: `status === "pending"` na starcie, `sections.length > 0`, `metadata.customerName` jest niepusty.
+
+**Zasada:** jeden test per wariant sformułowania + co najmniej jedna asercja na kształt payloadu. Nie dodawaj testów dla szczegółów mocka (np. konkretne liczby) — mocki ewoluują w Fazie 5.
+
+### Pliki ZMIENIONE / UTWORZONE w Fazie 1 + sprzątaniu escalation
+
+Faza 1:
+- `apps/main/src/graphs/chat/chat.state.ts` (dodane pole widgets z reducerem)
+- `apps/main/src/graphs/chat/chat.graph.ts` (return widgets)
+- `apps/main/src/graphs/chat/chat.widgets.shared.ts` (NEW)
+- `apps/main/src/graphs/chat/tools/get-consumption-timeline/get-consumption-timeline.types.ts` (NEW)
+- `apps/main/src/graphs/chat/tools/compare-tariffs/compare-tariffs.types.ts` (NEW)
+- `apps/main/src/graphs/chat/tools/prepare-contract-draft/prepare-contract-draft.types.ts` (NEW)
+
+Escalation removal:
+- `apps/main/src/graphs/chat/subgraphs/root/nodes/default-agent.node.ts` (enum bez `"escalate"`)
+- `apps/main/src/graphs/chat/subgraphs/root/nodes/gate.node.ts` (bez branchu escalated)
+- `apps/main/src/graphs/chat/subgraphs/root/nodes/verified-agent.node.ts` (pusta lista tools)
+- `apps/main/src/graphs/chat/subgraphs/root/prompts/default-agent.prompt.md`
+- `apps/main/src/graphs/chat/subgraphs/root/prompts/verified-agent.prompt.md`
+- `apps/main/src/graphs/chat/tools/index.ts` (pusty barrel)
+- `apps/main/src/graphs/chat/tools/escalate-to-human.tool.ts` (DELETED)
+- `apps/main/src/graphs/chat/subgraphs/root/nodes/escalation.node.ts` (DELETED)
+
+Testy:
+- `apps/main/scripts/test-batch.ts` (test 04 przemianowany na „autonomy")
+- `apps/main/scripts/test-demo.ts` (NEW — 15 scenariuszy)
+- `apps/main/scripts/test-runner.ts` (widgets w formatState, bez escalated)
+- `apps/main/package.json` (`test:demo` script)
+
+### UWAGA — `chat.graph.md` nie był aktualizowany
+
+Diagram Mermaid w `apps/main/src/graphs/chat/chat.graph.md` nadal pokazuje node `escalation` i tool `escalateToHuman`. Do aktualizacji przy okazji dokumentowania efektów Fazy 2 (i tak będzie trzeba dorysować tooly).
+
+### Następny krok
+
+**Faza 2** — `getConsumptionTimeline` wg sekcji wyżej. Po jej zakończeniu test `10` z `test-demo.ts` powinien zapalić się zielono automatycznie.

@@ -1,1 +1,2 @@
-export { escalateToHumanTool } from "./escalate-to-human.tool";
+// Tool exports — register new tools here as they come online.
+export {};

@@ -7,7 +7,6 @@ import {
   defaultAgentNode,
   defaultAgentEnds,
 } from "./subgraphs/root/nodes/default-agent.node";
-import { escalationNode } from "./subgraphs/root/nodes/escalation.node";
 import { spamNode } from "./subgraphs/root/nodes/spam.node";
 import { requestPhoneNode } from "./subgraphs/root/nodes/request-phone.node";
 import { verifyPhoneNode } from "./subgraphs/root/nodes/verify-phone.node";
@@ -23,7 +22,6 @@ import {
 export const graph = new StateGraph(ChatState)
   .addNode("gate", gateNode, { ends: gateEnds })
   .addNode("default_agent", defaultAgentNode, { ends: defaultAgentEnds })
-  .addNode("escalation", escalationNode)
   .addNode("spam", spamNode)
   .addNode("request_phone", requestPhoneNode)
   .addNode("verify_phone", verifyPhoneNode)
@@ -50,12 +48,15 @@ export async function invokeChatGraph(input: {
 
   return {
     message: String(lastMessage.content),
-    escalated: result.escalated ?? false,
+    // Agent is autonomous — never escalates to human. Kept in response for
+    // DB/dashboard compatibility.
+    escalated: false,
     blocked: result.blocked ?? false,
     authStep: result.authStep ?? null,
     authCode: result.authCode ?? null,
     verifiedPhone: result.verifiedPhone ?? null,
     language: result.language ?? null,
+    widgets: result.widgets ?? [],
     history,
   };
 }

@@ -2,7 +2,7 @@ import { Command, END } from "@langchain/langgraph";
 import { getMessage } from "../../../chat.messages";
 import type { ChatStateType } from "../../../chat.state";
 
-// Priority order: blocked > escalated > authStep > verifiedPhone > default
+// Priority order: blocked > authStep > verifiedPhone > default
 export const gateEnds = [
   "default_agent",
   "verify_phone",
@@ -17,17 +17,6 @@ export async function gateNode(state: ChatStateType): Promise<Command> {
     return new Command({
       update: {
         messages: [{ role: "assistant", content: getMessage("blocked", lang) }],
-      },
-      goto: END,
-    });
-  }
-
-  if (state.escalated) {
-    return new Command({
-      update: {
-        messages: [
-          { role: "assistant", content: getMessage("escalation", lang) },
-        ],
       },
       goto: END,
     });
