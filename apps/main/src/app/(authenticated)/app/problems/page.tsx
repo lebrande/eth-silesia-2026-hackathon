@@ -177,7 +177,11 @@ export default async function ProblemsPage({
                         ) : null}
                         <Button size="sm" asChild>
                           <Link
-                            href={`/app/faq/new?question=${encodeURIComponent(p.question)}`}
+                            href={`/app/faq/new?question=${encodeURIComponent(p.question)}${
+                              p.sampleThreadId
+                                ? `&threadId=${encodeURIComponent(p.sampleThreadId)}`
+                                : ""
+                            }`}
                           >
                             Dodaj do FAQ
                             <ArrowRight className="h-3.5 w-3.5" />

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function NewFaqPage({
   searchParams,
 }: {
-  searchParams: Promise<{ question?: string }>;
+  searchParams: Promise<{ question?: string; threadId?: string }>;
 }) {
   const params = await searchParams;
   const existingFaqs = await listFaqs();
@@ -42,6 +42,7 @@ export default async function NewFaqPage({
           <FaqForm
             mode="create"
             categories={categories}
+            threadId={params.threadId}
             initial={{
               question: params.question ?? "",
               answer: "",
