@@ -5,10 +5,9 @@ import { ToolMessage } from "@langchain/core/messages";
 import { z } from "zod";
 
 export const escalateToHumanTool = tool(
-  async ({ question }: { question: string }, config: ToolRunnableConfig) => {
+  async (_args: Record<string, never>, config: ToolRunnableConfig) => {
     return new Command({
       update: {
-        escalationQuestion: question,
         messages: [
           new ToolMessage({
             content: "Escalating to human agent.",
@@ -22,13 +21,7 @@ export const escalateToHumanTool = tool(
   {
     name: "escalateToHuman",
     description:
-      "Transfer the conversation to a human agent via WhatsApp. Use only when you cannot help with available tools or the customer explicitly asks for a human.",
-    schema: z.object({
-      question: z
-        .string()
-        .describe(
-          "The customer's question summarized for the human agent in the customer's language. Empty string if the customer simply wants to speak to a human.",
-        ),
-    }),
+      "Forward the conversation to a human consultant who will contact the customer. Use only when you cannot help with available tools or the customer explicitly asks for a human.",
+    schema: z.object({}),
   },
 );

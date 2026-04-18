@@ -13,10 +13,10 @@ graph LR
     escalation["escalation"]:::logic
 
     request_phone["request_phone"]:::auth
-    verify_phone["verify_phone · BL lookup"]:::auth
+    verify_phone["verify_phone · eligibility stub"]:::auth
     verify_code["verify_code"]:::auth
 
-    verified_agent["verified_agent · Sonnet · tools + loop"]:::llm
+    verified_agent["verified_agent · Sonnet · escalate tool"]:::llm
 
     __START__ --> gate
 

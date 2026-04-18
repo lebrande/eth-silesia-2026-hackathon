@@ -1,7 +1,3 @@
-import { STORE } from "./chat.constants";
-import { buildComponent } from "./chat.components";
-import { injectVariables } from "@/lib/prompts.shared";
-
 export const SUPPORTED_LANGUAGES = [
   "pl",
   "en",
@@ -37,34 +33,34 @@ export const MESSAGES: Record<MessageKey, Record<Language, string>> = {
     cs: "Tato konverzace byla uzavřena.",
   },
   spam: {
-    pl: "Nie rozumiem tej wiadomości. W czym mogę Ci pomóc w związku z naszym sklepem?",
-    en: "I didn't understand that message. How can I help you with our store?",
-    de: "Ich habe diese Nachricht nicht verstanden. Wie kann ich Ihnen bei unserem Shop helfen?",
-    lt: "Nesupratau šios žinutės. Kuo galiu padėti dėl mūsų parduotuvės?",
-    ua: "Я не зрозумів це повідомлення. Чим можу допомогти щодо нашого магазину?",
-    ro: "Nu am înțeles acest mesaj. Cum vă pot ajuta în legătură cu magazinul nostru?",
-    hu: "Nem értettem ezt az üzenetet. Miben segíthetek az üzletünkkel kapcsolatban?",
-    cs: "Této zprávě jsem nerozuměl. Jak vám mohu pomoci s naším obchodem?",
+    pl: "Nie zrozumiałem tej wiadomości. W czym mogę Ci pomóc?",
+    en: "I didn't understand that message. How can I help you?",
+    de: "Ich habe diese Nachricht nicht verstanden. Wie kann ich Ihnen helfen?",
+    lt: "Nesupratau šios žinutės. Kuo galiu padėti?",
+    ua: "Я не зрозумів це повідомлення. Чим можу допомогти?",
+    ro: "Nu am înțeles acest mesaj. Cum vă pot ajuta?",
+    hu: "Nem értettem ezt az üzenetet. Miben segíthetek?",
+    cs: "Této zprávě jsem nerozuměl. Jak vám mohu pomoci?",
   },
   escalation: {
-    pl: "W tej sytuacji warto skontaktować się z naszym zespołem przez WhatsApp\n${whatsappComponent}\n\nNasz zespół jest dostępny od poniedziałku do piątku w godzinach 9:00-17:00.",
-    en: "In this case it's best to contact our team via WhatsApp\n${whatsappComponent}\n\nOur team is available Monday to Friday, 9:00-17:00.",
-    de: "In diesem Fall wenden Sie sich am besten über WhatsApp an unser Team\n${whatsappComponent}\n\nUnser Team ist erreichbar Montag bis Freitag, 9:00-17:00 Uhr.",
-    lt: "Šiuo atveju geriausia susisiekti su mūsų komanda per WhatsApp\n${whatsappComponent}\n\nMūsų komanda pasiekiama nuo pirmadienio iki penktadienio, 9:00-17:00.",
-    ua: "У цьому випадку найкраще зв'язатися з нашою командою через WhatsApp\n${whatsappComponent}\n\nНаша команда доступна з понеділка по п'ятницю, 9:00-17:00.",
-    ro: "În această situație cel mai bine este să contactați echipa noastră prin WhatsApp\n${whatsappComponent}\n\nEchipa noastră este disponibilă de luni până vineri, 9:00-17:00.",
-    hu: "Ebben az esetben a legjobb, ha felveszi a kapcsolatot csapatunkkal WhatsApp-on\n${whatsappComponent}\n\nCsapatunk elérhető hétfőtől péntekig, 9:00-17:00.",
-    cs: "V tomto případě je nejlepší kontaktovat náš tým přes WhatsApp\n${whatsappComponent}\n\nNáš tým je k dispozici pondělí až pátek, 9:00-17:00.",
+    pl: "Przekazaliśmy Twoją sprawę do naszego konsultanta. Skontaktuje się z Tobą tak szybko, jak to możliwe.",
+    en: "We've forwarded your case to our consultant. They will contact you as soon as possible.",
+    de: "Wir haben Ihr Anliegen an unseren Berater weitergeleitet. Er wird sich so schnell wie möglich mit Ihnen in Verbindung setzen.",
+    lt: "Perdavėme jūsų klausimą mūsų konsultantui. Jis susisieks su jumis kuo greičiau.",
+    ua: "Ми передали вашу справу нашому консультанту. Він зв'яжеться з вами якомога швидше.",
+    ro: "Am transmis cazul dvs. consultantului nostru. Vă va contacta cât mai curând posibil.",
+    hu: "Ügyét továbbítottuk tanácsadónknak. A lehető leghamarabb kapcsolatba lép Önnel.",
+    cs: "Předali jsme vaši záležitost našemu konzultantovi. Bude vás kontaktovat co nejdříve.",
   },
   request_phone: {
-    pl: "Aby sprawdzić Twoje zamówienie, potrzebuję numer telefonu, który podałeś/aś przy zamówieniu.",
-    en: "To check your order, I need the phone number you used when placing the order.",
-    de: "Um Ihre Bestellung zu prüfen, benötige ich die Telefonnummer, die Sie bei der Bestellung angegeben haben.",
-    lt: "Norėdamas patikrinti jūsų užsakymą, man reikia telefono numerio, kurį nurodėte užsakydami.",
-    ua: "Щоб перевірити ваше замовлення, мені потрібен номер телефону, який ви вказали при оформленні замовлення.",
-    ro: "Pentru a verifica comanda dvs., am nevoie de numărul de telefon pe care l-ați folosit la plasarea comenzii.",
-    hu: "A rendelés ellenőrzéséhez szükségem van a telefonszámra, amelyet a rendeléskor megadott.",
-    cs: "Pro ověření vaší objednávky potřebuji telefonní číslo, které jste zadali při objednávce.",
+    pl: "Aby kontynuować, muszę zweryfikować Twoją tożsamość. Podaj numer telefonu.",
+    en: "To continue, I need to verify your identity. Please provide your phone number.",
+    de: "Um fortzufahren, muss ich Ihre Identität verifizieren. Bitte geben Sie Ihre Telefonnummer an.",
+    lt: "Norėdamas tęsti, turiu patvirtinti jūsų tapatybę. Įveskite telefono numerį.",
+    ua: "Щоб продовжити, мені потрібно підтвердити вашу особу. Вкажіть номер телефону.",
+    ro: "Pentru a continua, trebuie să vă verific identitatea. Vă rugăm să furnizați numărul de telefon.",
+    hu: "A folytatáshoz ellenőriznem kell a személyazonosságát. Kérem, adja meg a telefonszámát.",
+    cs: "Pro pokračování musím ověřit vaši totožnost. Zadejte prosím telefonní číslo.",
   },
   verify_phone_success: {
     pl: "Wysłaliśmy kod weryfikacyjny SMS na podany numer. Wpisz otrzymany 6-cyfrowy kod.",
@@ -77,14 +73,14 @@ export const MESSAGES: Record<MessageKey, Record<Language, string>> = {
     cs: "Odeslali jsme ověřovací kód SMS na vaše číslo. Zadejte prosím přijatý 6místný kód.",
   },
   verify_phone_not_found: {
-    pl: "Nie znaleźliśmy zamówień powiązanych z tym numerem telefonu. Sprawdź numer i spróbuj ponownie lub zadaj inne pytanie.",
-    en: "We couldn't find any orders associated with this phone number. Please check the number and try again, or ask another question.",
-    de: "Wir konnten keine Bestellungen zu dieser Telefonnummer finden. Bitte überprüfen Sie die Nummer und versuchen Sie es erneut oder stellen Sie eine andere Frage.",
-    lt: "Neradome užsakymų, susietų su šiuo telefono numeriu. Patikrinkite numerį ir bandykite dar kartą arba užduokite kitą klausimą.",
-    ua: "Ми не знайшли замовлень, пов'язаних із цим номером телефону. Перевірте номер і спробуйте ще раз або задайте інше запитання.",
-    ro: "Nu am găsit comenzi asociate cu acest număr de telefon. Verificați numărul și încercați din nou sau puneți altă întrebare.",
-    hu: "Nem találtunk ehhez a telefonszámhoz tartozó rendelést. Ellenőrizze a számot és próbálja újra, vagy tegyen fel másik kérdést.",
-    cs: "Nenašli jsme žádné objednávky spojené s tímto telefonním číslem. Zkontrolujte číslo a zkuste to znovu nebo položte jinou otázku.",
+    pl: "Nie rozpoznaję tego numeru telefonu. Sprawdź numer i spróbuj ponownie lub zadaj inne pytanie.",
+    en: "I couldn't recognize that phone number. Please check it and try again, or ask another question.",
+    de: "Ich konnte diese Telefonnummer nicht erkennen. Bitte überprüfen Sie sie und versuchen Sie es erneut oder stellen Sie eine andere Frage.",
+    lt: "Neatpažinau šio telefono numerio. Patikrinkite jį ir bandykite dar kartą arba užduokite kitą klausimą.",
+    ua: "Я не розпізнав цей номер телефону. Перевірте його і спробуйте ще раз або задайте інше запитання.",
+    ro: "Nu am putut recunoaște acest număr de telefon. Verificați-l și încercați din nou sau puneți altă întrebare.",
+    hu: "Nem ismertem fel ezt a telefonszámot. Ellenőrizze és próbálja újra, vagy tegyen fel másik kérdést.",
+    cs: "Toto telefonní číslo jsem nerozpoznal. Zkontrolujte ho a zkuste to znovu nebo položte jinou otázku.",
   },
   verify_code_invalid: {
     pl: "Nieprawidłowy kod. Spróbuj ponownie.",
@@ -113,17 +109,4 @@ export function getMessage(key: MessageKey, language: string): string {
     SUPPORTED_LANGUAGES.includes(language as Language) ? language : "en"
   ) as Language;
   return MESSAGES[key][lang];
-}
-
-export function buildEscalationReply(
-  language: string,
-  question?: string,
-): string {
-  const url = question
-    ? `${STORE.WHATSAPP_URL}?text=${encodeURIComponent(question)}`
-    : STORE.WHATSAPP_URL;
-
-  return injectVariables(getMessage("escalation", language), {
-    whatsappComponent: buildComponent("whatsapp", { url }),
-  });
 }

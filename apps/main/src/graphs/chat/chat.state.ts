@@ -12,7 +12,6 @@ export const ChatState = z.object({
   escalated: z.boolean().optional(),
   blocked: z.boolean().optional(),
   spamCounter: z.number().optional(),
-  escalationQuestion: z.string().optional(),
 
   // Auth flow — nullable fields are reset to null when auth cycle ends
   authStep: z.enum(["awaiting_phone", "awaiting_code"]).nullable().optional(),

@@ -14,7 +14,7 @@ export default async function AuthenticatedLayout({
       <header className="border-b border-gray-200 bg-white">
         <div className="max-w-4xl mx-auto flex justify-between items-center px-6 h-14">
           <span className="text-[15px] font-semibold tracking-tight">
-            Ileopard
+            Eth Silesia
           </span>
           <div className="flex items-center gap-8">
             <span className="text-[13px] leading-none text-gray-400">

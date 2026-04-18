@@ -1,5 +1,5 @@
 {
-  "name": "ileopard-services",
+  "name": "eth-silesia",
   "private": true,
   "scripts": {
     "dev": "pnpm -F main dev",

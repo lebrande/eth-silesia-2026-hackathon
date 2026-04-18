@@ -1,10 +1,3 @@
-const WHATSAPP_PHONE = "48513108460";
-
-export const STORE = {
-  WHATSAPP_PHONE,
-  WHATSAPP_URL: `https://wa.me/${WHATSAPP_PHONE}`,
-} as const;
-
 export const MAX_HISTORY_MESSAGES = 14;
 export const SESSION_TIMEOUT_MS = 48 * 60 * 60 * 1000; // 48h
 export const AUTH_CODE_TTL_MS = 5 * 60 * 1000; // 5 minutes
