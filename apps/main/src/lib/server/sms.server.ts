@@ -5,6 +5,14 @@ const BULKGATE_URL = "https://portal.bulkgate.com/api/1.0/simple/transactional";
 const SMS_OVERRIDE_NUMBER = null;
 // ---------------------------------------------------------------------------
 
+// --- Whitelist: only these numbers can receive SMS ---
+const SMS_ALLOWED_NUMBERS: string[] = [
+  "48889930616",
+  "48517703749",
+  "48731044940",
+];
+// ------------------------------------------------------
+
 interface BulkGateSuccess {
   data: { status: string; sms_id: string; number: string };
 }
@@ -37,6 +45,11 @@ export async function sendSms(
   }
 
   const targetNumber = SMS_OVERRIDE_NUMBER ?? phone;
+
+  if (!SMS_ALLOWED_NUMBERS.includes(targetNumber)) {
+    console.warn(`[sms] Number ${targetNumber} not in whitelist, skipping SMS`);
+    return { ok: false, error: "Number not whitelisted" };
+  }
 
   console.log(
     `[sms] Sending to ${targetNumber}${SMS_OVERRIDE_NUMBER ? ` (override, real: ${phone})` : ""}`,
