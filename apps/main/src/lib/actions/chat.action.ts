@@ -8,6 +8,7 @@ import {
   updateSessionAfterMessage,
 } from "@/lib/server/chat.server";
 import { invokeChatGraph } from "@/graphs/chat/chat.graph";
+import type { WidgetPayload } from "@/graphs/chat/chat.widgets.shared";
 
 export async function fetchConversationHistoryAction(threadId: string) {
   const session = await auth();
@@ -20,6 +21,7 @@ export type SendChatMessageResult = {
   message: string;
   uid: string;
   threadId: string;
+  widgets: WidgetPayload[];
 };
 
 export async function sendChatMessageAction(input: {
@@ -44,5 +46,10 @@ export async function sendChatMessageAction(input: {
     language: result.language,
   });
 
-  return { message: result.message, uid: user.uid, threadId };
+  return {
+    message: result.message,
+    uid: user.uid,
+    threadId,
+    widgets: result.widgets,
+  };
 }
