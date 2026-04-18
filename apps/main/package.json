@@ -20,6 +20,7 @@
     "test:demo": "tsx scripts/test-demo.ts",
     "test:silesian": "tsx scripts/test-silesian.ts",
     "test:e2e": "playwright test",
+    "test:e2e:backoffice": "playwright test backoffice",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
