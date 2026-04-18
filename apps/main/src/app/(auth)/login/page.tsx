@@ -31,7 +31,7 @@ export default async function LoginPage(props: {
           }
         }}
       >
-        <h1 className="text-2xl font-semibold">Ileopard</h1>
+        <h1 className="text-2xl font-semibold">Eth Silesia</h1>
 
         {error && (
           <p className="rounded bg-red-50 p-3 text-sm text-red-600">

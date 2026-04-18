@@ -1,5 +1,5 @@
 import { Command, END } from "@langchain/langgraph";
-import { getMessage, buildEscalationReply } from "../../../chat.messages";
+import { getMessage } from "../../../chat.messages";
 import type { ChatStateType } from "../../../chat.state";
 
 // Priority order: blocked > escalated > authStep > verifiedPhone > default
@@ -26,10 +26,7 @@ export async function gateNode(state: ChatStateType): Promise<Command> {
     return new Command({
       update: {
         messages: [
-          {
-            role: "assistant",
-            content: buildEscalationReply(lang, state.escalationQuestion),
-          },
+          { role: "assistant", content: getMessage("escalation", lang) },
         ],
       },
       goto: END,

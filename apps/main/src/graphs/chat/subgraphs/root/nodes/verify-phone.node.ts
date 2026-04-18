@@ -2,7 +2,6 @@ import { Command, END } from "@langchain/langgraph";
 import { getMessage } from "../../../chat.messages";
 import { AUTH_CODE_TTL_MS } from "../../../chat.constants";
 import { getLastUserMessageContent } from "@/lib/messages.shared";
-import { getOrdersByPhone } from "@/lib/server/baselinker.server";
 import { sendSms } from "@/lib/server/sms.server";
 import type { ChatStateType } from "../../../chat.state";
 
@@ -16,13 +15,22 @@ function generateCode(): string {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
+// ---------------------------------------------------------------------------
+// Phone-eligibility check. Return `true` to send the SMS code, `false` to bail.
+// Current policy: any well-formed phone is accepted.
+// TODO: replace with real whitelist / CRM lookup / DB check.
+// ---------------------------------------------------------------------------
+async function isPhoneEligible(_phone: string): Promise<boolean> {
+  return true;
+}
+
 export async function verifyPhoneNode(state: ChatStateType): Promise<Command> {
   const lang = state.language ?? "pl";
   const userMessage = getLastUserMessageContent(state.messages);
   const phone = extractPhoneNumber(userMessage);
-  const hasOrders = phone ? (await getOrdersByPhone(phone)).length > 0 : false;
+  const eligible = phone ? await isPhoneEligible(phone) : false;
 
-  if (!hasOrders) {
+  if (!phone || !eligible) {
     return new Command({
       update: {
         authStep: null,
@@ -41,7 +49,7 @@ export async function verifyPhoneNode(state: ChatStateType): Promise<Command> {
   const expiresAt = Date.now() + AUTH_CODE_TTL_MS;
 
   console.log(`[auth] Verification code for ${phone}: ${code}`);
-  await sendSms(phone!, `Sklep iLeopard - Twój kod weryfikacyjny: ${code}`);
+  await sendSms(phone, `Eth Silesia - Twój kod weryfikacyjny: ${code}`);
 
   return new Command({
     update: {

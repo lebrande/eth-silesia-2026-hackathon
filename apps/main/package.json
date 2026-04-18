@@ -14,9 +14,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed-user": "tsx scripts/seed-user.ts",
     "test:chat": "tsx scripts/test-chat.ts",
-    "test:chat-batch": "tsx scripts/test-chat-batch.ts",
-    "test:auth-batch": "tsx scripts/test-auth-batch.ts",
-    "test:verified-batch": "tsx scripts/test-verified-batch.ts"
+    "test:batch": "tsx scripts/test-batch.ts"
   },
   "dependencies": {
     "@langchain/core": "^1.1.30",

@@ -19,11 +19,6 @@ const DefaultAgentSchema = z.object({
     .describe(
       "The answer to the customer's question in their language. Empty string unless action is 'answer'.",
     ),
-  escalationQuestion: z
-    .string()
-    .describe(
-      "When action is 'escalate': question from the customer's perspective (first person) for WhatsApp. Empty string otherwise.",
-    ),
 });
 
 const ROUTE_MAP: Record<string, string> = {
@@ -64,17 +59,7 @@ export async function defaultAgentNode(state: ChatStateType): Promise<Command> {
     });
   }
 
-  if (result.action === "escalate") {
-    return new Command({
-      update: {
-        language: result.language,
-        escalationQuestion: result.escalationQuestion,
-      },
-      goto,
-    });
-  }
-
-  // request_auth or spam — just route, language update only
+  // escalate / request_auth / spam — route, update language only
   return new Command({
     update: { language: result.language },
     goto,

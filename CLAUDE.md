@@ -1,4 +1,4 @@
-# CLAUDE.md - Ileopard Services
+# CLAUDE.md - Eth Silesia
 
 ## Projekt
 
@@ -156,14 +156,14 @@ pnpm -F main db:seed-user             # create admin user
 
 ## LangSmith MCP
 
-Projekt lokalny: `ileopard-services-local`
+Projekt lokalny: `eth-silesia-local`
 
 ### fetch_runs
 
 ```typescript
 // ZAWSZE używaj limit: 1-3 bo odpowiedzi są OGROMNE
 fetch_runs({
-  project_name: "ileopard-services-local",
+  project_name: "eth-silesia-local",
   limit: 1,
   is_root: "true",
   run_type: "chain",
