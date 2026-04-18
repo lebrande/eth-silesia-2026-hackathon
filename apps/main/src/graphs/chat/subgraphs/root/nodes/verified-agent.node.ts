@@ -5,7 +5,11 @@ import { runToolCallingLoop } from "@/lib/tool-calling.shared";
 import type { StructuredToolInterface } from "@langchain/core/tools";
 import type { ChatStateType } from "../../../chat.state";
 import { MAX_HISTORY_MESSAGES } from "../../../chat.constants";
-import { getConsumptionTimelineTool } from "../../../tools";
+import {
+  compareTariffsTool,
+  getConsumptionTimelineTool,
+  prepareContractDraftTool,
+} from "../../../tools";
 
 export const verifiedAgentEnds: string[] = [];
 
@@ -14,7 +18,11 @@ const getSystemPrompt = getAgentPrompt(
 );
 
 // Tools available AFTER successful SMS verification.
-const tools: StructuredToolInterface[] = [getConsumptionTimelineTool];
+const tools: StructuredToolInterface[] = [
+  getConsumptionTimelineTool,
+  compareTariffsTool,
+  prepareContractDraftTool,
+];
 const llm = createLLM().bindTools(tools);
 
 export async function verifiedAgentNode(
