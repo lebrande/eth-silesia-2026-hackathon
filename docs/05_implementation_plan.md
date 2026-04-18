@@ -76,10 +76,12 @@ import type { ConsumptionTimelineData } from "@/graphs/chat/tools/get-consumptio
    - `WidgetPayload = { type: "ConsumptionTimeline"; data: ConsumptionTimelineData } | { type: "TariffComparator"; data: TariffComparatorData } | { type: "ContractSigning"; data: ContractSigningData }`
 3. Dodaj `widgets` do `ChatState` z **append-reducerem**, default `[]`:
    ```ts
-   widgets: z.custom<WidgetPayload[]>().default(() => []).register(registry, {
-     reducer: (prev, next) => [...(prev ?? []), ...(next ?? [])],
-     default: () => [],
-   })
+   widgets: z.custom<WidgetPayload[]>()
+     .default(() => [])
+     .register(registry, {
+       reducer: (prev, next) => [...(prev ?? []), ...(next ?? [])],
+       default: () => [],
+     });
    ```
 4. Dodaj `widgets: result.widgets ?? []` do return z `invokeChatGraph`.
 5. Sanity check: wyślij dowolną wiadomość przez chat → response zawiera `widgets: []`. Brak błędów TS.
@@ -100,8 +102,13 @@ import type { ConsumptionTimelineData } from "@/graphs/chat/tools/get-consumptio
    ```ts
    import type { ConsumptionTimelineData } from "./get-consumption-timeline.types";
    export const consumptionTimelineMock: ConsumptionTimelineData = {
-     months: [ /* 3-4 miesiące: kwi, maj, cze, lip */ ],
-     anomaly: { month: "2025-10", reason: "Skok o 78% vs średnia — prawdopodobnie pompa ciepła" },
+     months: [
+       /* 3-4 miesiące: kwi, maj, cze, lip */
+     ],
+     anomaly: {
+       month: "2025-10",
+       reason: "Skok o 78% vs średnia — prawdopodobnie pompa ciepła",
+     },
    };
    ```
 2. Stwórz `get-consumption-timeline.tool.ts` (LangChain `tool()` factory):
@@ -223,12 +230,12 @@ Dodane dwa suite'y w `apps/main/scripts/` (uruchomienie: `pnpm -F main test:batc
 
 Testy fail'ujące to TDD red phase — zaświecą się zielono w miarę wdrażania kolejnych faz:
 
-| Test | Odblokowuje faza |
-| --- | --- |
-| `10` — bills → `ConsumptionTimeline` | **Faza 2** |
-| `11`, `12` — devices / „pokaż opcje" → `TariffComparator` | **Faza 3** |
-| `13`, `14` — „daj G13" / „biorę G12" → `ContractSigning` | **Faza 4** |
-| `15` — akumulacja 3 widgetów w sesji | **Fazy 2+3+4** |
+| Test                                                      | Odblokowuje faza |
+| --------------------------------------------------------- | ---------------- |
+| `10` — bills → `ConsumptionTimeline`                      | **Faza 2**       |
+| `11`, `12` — devices / „pokaż opcje" → `TariffComparator` | **Faza 3**       |
+| `13`, `14` — „daj G13" / „biorę G12" → `ContractSigning`  | **Faza 4**       |
+| `15` — akumulacja 3 widgetów w sesji                      | **Fazy 2+3+4**   |
 
 ### Konwencja asercji na payload widgetu
 
@@ -239,7 +246,10 @@ const compare = findWidget(r.widgets, "TariffComparator");
 assert(!!compare, "TariffComparator widget emitted");
 if (compare) {
   assert(compare.data.tariffs.length === 3, "compares exactly 3 tariffs");
-  assert(compare.data.tariffs.filter(t => t.recommended).length === 1, "exactly one recommended");
+  assert(
+    compare.data.tariffs.filter((t) => t.recommended).length === 1,
+    "exactly one recommended",
+  );
 }
 ```
 
@@ -256,6 +266,7 @@ if (compare) {
 ### Pliki ZMIENIONE / UTWORZONE w Fazie 1 + sprzątaniu escalation
 
 Faza 1:
+
 - `apps/main/src/graphs/chat/chat.state.ts` (dodane pole widgets z reducerem)
 - `apps/main/src/graphs/chat/chat.graph.ts` (return widgets)
 - `apps/main/src/graphs/chat/chat.widgets.shared.ts` (NEW)
@@ -264,6 +275,7 @@ Faza 1:
 - `apps/main/src/graphs/chat/tools/prepare-contract-draft/prepare-contract-draft.types.ts` (NEW)
 
 Escalation removal:
+
 - `apps/main/src/graphs/chat/subgraphs/root/nodes/default-agent.node.ts` (enum bez `"escalate"`)
 - `apps/main/src/graphs/chat/subgraphs/root/nodes/gate.node.ts` (bez branchu escalated)
 - `apps/main/src/graphs/chat/subgraphs/root/nodes/verified-agent.node.ts` (pusta lista tools)
@@ -274,6 +286,7 @@ Escalation removal:
 - `apps/main/src/graphs/chat/subgraphs/root/nodes/escalation.node.ts` (DELETED)
 
 Testy:
+
 - `apps/main/scripts/test-batch.ts` (test 04 przemianowany na „autonomy")
 - `apps/main/scripts/test-demo.ts` (NEW — 15 scenariuszy)
 - `apps/main/scripts/test-runner.ts` (widgets w formatState, bez escalated)
@@ -286,3 +299,173 @@ Diagram Mermaid w `apps/main/src/graphs/chat/chat.graph.md` nadal pokazuje node 
 ### Następny krok
 
 **Faza 2** — `getConsumptionTimeline` wg sekcji wyżej. Po jej zakończeniu test `10` z `test-demo.ts` powinien zapalić się zielono automatycznie.
+
+---
+
+## Status sesji 2026-04-18 (cd.) — notatka po Fazie 2
+
+### Faza 2 — ZAKOŃCZONA
+
+Zaimplementowane dokładnie wg planu:
+
+- `tools/get-consumption-timeline/get-consumption-timeline.mock.ts` — 4 miesiące (lip–paź 2025) + anomalia w 2025-10 (pompa ciepła od IX/2025)
+- `tools/get-consumption-timeline/get-consumption-timeline.tool.ts` — LangChain `tool()` zwracający `Command({ update: { widgets: [...], messages: [ToolMessage] } })`
+- `tools/index.ts` — eksport `getConsumptionTimelineTool`
+- `subgraphs/root/nodes/verified-agent.node.ts` — `tools: StructuredToolInterface[] = [getConsumptionTimelineTool]`
+- `subgraphs/root/prompts/verified-agent.prompt.md` — dodana sekcja `<narzędzia>` z twardą regułą „ZAWSZE wołaj `getConsumptionTimeline` gdy…", instrukcją krótkiego komentarza (1–2 zdania), pytaniem o sprzęty i zakazem powtarzania liczb z widgetu
+
+### PUŁAPKA TECHNICZNA — `tool_call_id` w ToolMessage
+
+Plan sugeruje `config.toolCall?.id ?? ""` i to jest **jedyne poprawne podejście**. Ja próbowałem najpierw nowszego API `runtime.toolCallId` (z `ToolRuntime` typu) — ale w tej wersji LangChain (`@langchain/core@1.1.30`) `runtime.toolCallId` **nie jest propagowane** przez `tool()` factory do funkcji użytkownika. Rezultat: `ToolMessage.tool_call_id` był pusty, pierwsza tura działała (widget emitowany), ale w follow-up turze Anthropic zwracał `400 INVALID_TOOL_RESULTS - 'tool_call_id'`.
+
+Fix: użyć `ToolRunnableConfig` jako drugiego argumentu i odczytać `config.toolCall?.id`. Dla Fazy 3 i 4 — **skopiować wzorzec z `get-consumption-timeline.tool.ts`** dokładnie, nie kombinować z `ToolRuntime`.
+
+```ts
+async (input, config: ToolRunnableConfig) => {
+  const toolCallId = config.toolCall?.id ?? "";
+  return new Command({ update: { widgets: [...], messages: [new ToolMessage({ ..., tool_call_id: toolCallId })] } });
+}
+```
+
+### Testy — stan po Fazie 2
+
+`pnpm -F main test:demo` → **10/15 pass** (było 9/15).
+
+- Test 10 (ConsumptionTimeline widget emit + kształt payloadu): wszystkie 6 asercji zielone
+- Test 15 (akumulacja widgetów): `ConsumptionTimeline` zielony (widać w state `widgets=ConsumptionTimeline,ConsumptionTimeline`), `TariffComparator` i `ContractSigning` nadal czerwone — TDD red dla Faz 3/4
+- Testy 11–14: czerwone zgodnie z oczekiwaniem (brakuje `compareTariffs` / `prepareContractDraft`)
+
+Opcjonalne rozszerzenia testów po Fazie 2 (z planu: „1-2 warianty sformułowań dla triggera") — **nie zrobione**. Nie było konieczne bo główny test 10 przeszedł z pierwszą frazą triggera. Do dopisania jeśli ktoś będzie chciał twardsze pokrycie.
+
+### Pliki UTWORZONE / ZMIENIONE w Fazie 2
+
+Nowe:
+
+- `apps/main/src/graphs/chat/tools/get-consumption-timeline/get-consumption-timeline.mock.ts`
+- `apps/main/src/graphs/chat/tools/get-consumption-timeline/get-consumption-timeline.tool.ts`
+
+Zmienione:
+
+- `apps/main/src/graphs/chat/tools/index.ts` (eksport tool)
+- `apps/main/src/graphs/chat/subgraphs/root/nodes/verified-agent.node.ts` (bind tool do listy)
+- `apps/main/src/graphs/chat/subgraphs/root/prompts/verified-agent.prompt.md` (sekcja `<narzędzia>`)
+
+### `chat.graph.md` — nadal nie aktualizowany
+
+Diagram Mermaid nadal pokazuje `escalation` + wszystkie 3 tooly (w tym nieistniejący `escalateToHuman`). Decyzja: **czekamy do Fazy 4** i robimy jedną aktualizację na końcu, żeby nie przepisywać tego samego 3× (po Faza 2 → +1 tool, po Faza 3 → +1, po Faza 4 → +1). Oznaczone jako dług do spłaty razem z efektami Fazy 4.
+
+### Następny krok
+
+**Faza 3** — `compareTariffs`. Wzorować się 1:1 na strukturze `get-consumption-timeline/` (mock + tool + bind + prompt rule). Po niej testy `11` i `12` powinny zapalić się zielono. **Pamiętać o pułapce `tool_call_id`** (patrz wyżej).
+
+---
+
+## Status sesji 2026-04-18 (cd.) — notatka po Fazach 3 i 4
+
+### Faza 3 — ZAKOŃCZONA
+
+Zaimplementowane dokładnie wg planu:
+
+- `tools/compare-tariffs/compare-tariffs.mock.ts` — 3 taryfy (G11 baseline, G12 −19%, G13 −30% recommended) dla profilu Anny z pompą ciepła
+- `tools/compare-tariffs/compare-tariffs.tool.ts` — LangChain `tool()` emitujący `TariffComparator`, wzorowany 1:1 na `get-consumption-timeline.tool.ts` (pułapka `tool_call_id` uniknięta)
+- `tools/index.ts` — eksport `compareTariffsTool`
+- `subgraphs/root/nodes/verified-agent.node.ts` — `compareTariffsTool` dodany do listy
+- `subgraphs/root/prompts/verified-agent.prompt.md` — dodane dwie reguły: „ZAWSZE wołaj `compareTariffs` gdy klient opisuje sprzęty lub prosi o opcje taryf" + zakaz pytania „czy pokazać" + instrukcja krótkiego komentarza z konkretnym pytaniem „G13 czy G12?"
+
+### Faza 4 — ZAKOŃCZONA
+
+Zaimplementowane dokładnie wg planu:
+
+- `tools/prepare-contract-draft/prepare-contract-draft.mock.ts` — **funkcja** `contractSigningMock(tariffCode)` (nie stała — bo `tariffCode` musi trafić do `metadata`). 5 sekcji treści umowy, `effectiveFrom: "2026-05-01"`, `customerName: "Anna Kowalska"`, `status: "pending"`
+- `tools/prepare-contract-draft/prepare-contract-draft.tool.ts` — schemat `z.object({ tariffCode: z.enum(["G12", "G13"]) })`, emituje `ContractSigning` z `tariffCode` odzwierciedlającym wybór klienta
+- `tools/index.ts` — eksport `prepareContractDraftTool`
+- `subgraphs/root/nodes/verified-agent.node.ts` — `prepareContractDraftTool` dodany do listy
+- `subgraphs/root/prompts/verified-agent.prompt.md` — dodane dwie reguły: „ZAWSZE wołaj `prepareContractDraft` z `tariffCode` gdy klient wybrał taryfę" + instrukcja jednozdaniowego komentarza („Przygotowałem draft umowy, przeczytaj go…")
+
+### Testy — stan po Fazach 3 i 4
+
+`pnpm -F main test:demo` → **15/15 pass** (było 10/15).
+`pnpm -F main test:batch` → **6/6 pass** (bez regresji).
+
+Wszystkie testy odblokowane wg tabeli w notatce Fazy 1:
+
+- Test 11 (devices → `TariffComparator`, 3 taryfy, dokładnie 1 recommended) — green
+- Test 12 (alt phrasing „pokaż opcje taryf") — green
+- Test 13 („daj G13" → `ContractSigning` z `tariffCode=G13`, sections, status=pending) — green
+- Test 14 („biorę G12" → `tariffCode=G12`) — green
+- Test 15 (akumulacja wszystkich 3 widgetów w sesji) — green
+
+Opcjonalne rozszerzenia testów po Fazach 3/4 (z planu: dodatkowe asercje `delta` vs G11, `recommended` exactly one, `sections.length > 0`, `status === "pending"`) — już obecne w `test-demo.ts` i zielone. Nie ma co dorzucać.
+
+### Konwencja: mock-jako-funkcja dla `prepareContractDraft`
+
+W przeciwieństwie do `getConsumptionTimeline` i `compareTariffs` (stałe obiekty) — `prepareContractDraft.mock.ts` eksportuje **funkcję** `contractSigningMock(tariffCode)` bo argument z LLM musi trafić do `metadata.tariffCode`. Jest to świadoma różnica, nie niespójność. Jeśli w przyszłości inny tool będzie parametryzowany — skopiować ten wzorzec.
+
+### Pułapka `tool_call_id` — potwierdzenie
+
+Wzorzec z `get-consumption-timeline.tool.ts` (`config.toolCall?.id ?? ""` w drugim argumencie typu `ToolRunnableConfig`) zadziałał out-of-the-box dla obu nowych narzędzi. **Nie kombinować z `runtime.toolCallId` / `ToolRuntime`** — patrz notatka Fazy 2.
+
+### Pliki UTWORZONE / ZMIENIONE w Fazach 3 i 4
+
+Nowe:
+
+- `apps/main/src/graphs/chat/tools/compare-tariffs/compare-tariffs.mock.ts`
+- `apps/main/src/graphs/chat/tools/compare-tariffs/compare-tariffs.tool.ts`
+- `apps/main/src/graphs/chat/tools/prepare-contract-draft/prepare-contract-draft.mock.ts`
+- `apps/main/src/graphs/chat/tools/prepare-contract-draft/prepare-contract-draft.tool.ts`
+
+Zmienione:
+
+- `apps/main/src/graphs/chat/tools/index.ts` (+2 eksporty)
+- `apps/main/src/graphs/chat/subgraphs/root/nodes/verified-agent.node.ts` (lista `tools` rozszerzona do 3 elementów)
+- `apps/main/src/graphs/chat/subgraphs/root/prompts/verified-agent.prompt.md` (4 nowe bullety w sekcji `<narzędzia>`)
+
+### Dług — `chat.graph.md`
+
+Diagram Mermaid nadal pokazuje `escalation` + `escalateToHuman`. Teraz jest moment na aktualizację — backend-owe tooling jest kompletny (3 tooly w `verified_agent`, brak escalation). Propozycja:
+
+- usunąć node `escalation` i wszystkie krawędzie do/z niego
+- usunąć `escalateToHuman` z listy tooli `verified_agent`
+- dodać do listy tooli `verified_agent`: `getConsumptionTimeline`, `compareTariffs`, `prepareContractDraft`
+- ewentualnie wzmiankować, że każdy tool emituje odpowiedni widget (1:1 mapping)
+
+Do zrobienia przy okazji dokumentowania — nie blokuje frontu ani Fazy 5.
+
+### Następny krok
+
+**Faza 5 (opcjonalnie)** — wzbogacenie mocków do realistycznych danych (36 miesięcy timeline, pełne stawki per strefa, realna struktura umowy Tauron). Trzy niezależne pliki → idealna kandydatka na równoległe subagenty.
+
+---
+
+## Status sesji 2026-04-18 (cd.) — notatka po Fazie 5
+
+### Faza 5 — ZAKOŃCZONA (zakres minimalny)
+
+Zastosowana zasada „nie dodawaj zbyt dużo jeśli nie trzeba" (YAGNI). Dotknięty **tylko jeden plik** — pozostałe dwa mocki są wystarczające w swojej obecnej formie.
+
+**Zmienione:**
+
+- `tools/get-consumption-timeline/get-consumption-timeline.mock.ts` — rozszerzone z 4 do 12 miesięcy (`2024-11` → `2025-10`) z realistyczną sezonowością (zimowe szczyty 380–420 kWh, letnie dołki 215–240 kWh, skok od września 2025 przy uruchomieniu pompy ciepła do 420/640 kWh). Tekst anomalii odnosi się teraz do średniej z 12 miesięcy (~305 kWh) zamiast do zgadywanego „+78%". Koszty spójne z efektywną stawką ~0,70 PLN/kWh (mrożenie cen przez 2025).
+
+**Świadomie NIE zmieniane:**
+
+- `compare-tariffs.mock.ts` — 3 taryfy z `annualCostPLN` + `deltaPct` + `recommended` to wszystko, czego potrzebuje widget i testy. Dokładanie stawek per strefa / breakeven wymaga rozszerzenia typu — poza zakresem Fazy 5 bez zmian API.
+- `prepare-contract-draft.mock.ts` — 5 sekcji realistycznej umowy Tauron jest wystarczające dla demo. URL do QR mObywatela wymagałby rozszerzenia typu `ContractSigningData` — celowo poza zakresem (QR można dodać po stronie FE jako stały asset demo).
+
+Plan pierwotnie zakładał 36 miesięcy + breakdown dzień/noc/weekend dla timeline — **odrzucone**: 12 miesięcy wystarcza do pokazania skoku (Anna vs pompa ciepła), a breakdown stref wymagałby zmiany typu.
+
+### Testy — stan po Fazie 5
+
+`pnpm -F main test:demo` → **15/15 pass** (bez regresji).
+
+### Pliki ZMIENIONE w Fazie 5
+
+- `apps/main/src/graphs/chat/tools/get-consumption-timeline/get-consumption-timeline.mock.ts` (12 miesięcy + nowy opis anomalii)
+
+### Następny krok
+
+Implementacja backendowa planu zakończona (Fazy 1–5). Otwarte długi:
+
+1. **Aktualizacja `chat.graph.md`** — diagram Mermaid nadal pokazuje `escalation` + `escalateToHuman`. Do uzupełnienia listą 3 tooli + usunięcia escalation.
+2. **Frontend renderery widgetów** — 3 komponenty (`ConsumptionTimeline`, `TariffComparator`, `ContractSigning`) + `WidgetRenderer` ze switchem na `payload.type`. Typy są gotowe do importu z `@/graphs/chat/chat.widgets.shared`.
+3. **Opcjonalnie** — rozszerzenie typów (np. QR URL w `ContractSigningData`, stawki per strefa w `TariffComparatorData`) jeśli FE zgłosi taką potrzebę.
