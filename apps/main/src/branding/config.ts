@@ -15,7 +15,7 @@ export const BRAND = {
   },
 
   backoffice: {
-    productLabel: "Backoffice AI",
+    productLabel: "Backoffice",
     tenantLabel: "TAURON",
   },
 

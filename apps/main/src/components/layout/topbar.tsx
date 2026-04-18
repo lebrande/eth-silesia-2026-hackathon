@@ -2,15 +2,6 @@ import { logoutAction } from "@/lib/actions/auth.action";
 import { LogOut } from "lucide-react";
 import type { BackofficeUser } from "@/lib/types";
 
-function avatarColor(seed: string): string {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  }
-  const hue = hash % 360;
-  return `oklch(0.55 0.18 ${hue})`;
-}
-
 export function Topbar({ user, title }: { user: BackofficeUser; title?: string }) {
   const label = user.name || user.email || "user";
   const initials = label
@@ -33,10 +24,7 @@ export function Topbar({ user, title }: { user: BackofficeUser; title?: string }
 
       <div className="flex items-center gap-3">
         <div className="hidden sm:flex items-center gap-2">
-          <div
-            className="h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shadow-sm"
-            style={{ background: avatarColor(user.id) }}
-          >
+          <div className="h-8 w-8 rounded-full flex items-center justify-center bg-primary text-primary-foreground text-xs font-semibold shadow-sm">
             {initials}
           </div>
           <div className="flex flex-col leading-tight">

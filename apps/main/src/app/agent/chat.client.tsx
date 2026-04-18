@@ -130,7 +130,7 @@ export function ChatPage() {
                   </div>
                 </div>
                 {m.widgets?.length ? (
-                  <div className="flex w-full max-w-[80%] flex-col gap-2">
+                  <div className="flex w-full flex-col gap-2">
                     {m.widgets.map((w, j) => (
                       <WidgetRenderer key={j} widget={w} />
                     ))}

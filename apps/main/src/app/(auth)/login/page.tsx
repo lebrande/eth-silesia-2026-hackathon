@@ -1,78 +1,33 @@
 import { redirect } from "next/navigation";
-import { AuthError } from "next-auth";
-import { signIn, auth } from "@/auth";
+import { auth } from "@/auth";
 import { BRAND } from "@/branding/config";
+import { BrandLogo } from "@/components/brand-logo";
+import { LoginForm } from "@/components/auth/login-form";
 
-export default async function LoginPage(props: {
-  searchParams: Promise<{ error?: string }>;
-}) {
+export default async function LoginPage() {
   const session = await auth();
   if (session?.user) redirect("/app/dashboard");
 
-  const searchParams = await props.searchParams;
-  const error = searchParams.error;
-
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <form
-        className="w-full max-w-sm space-y-4 rounded-lg border p-8"
-        action={async (formData) => {
-          "use server";
-          try {
-            await signIn("credentials", {
-              email: formData.get("email"),
-              password: formData.get("password"),
-              redirectTo: "/app/dashboard",
-            });
-          } catch (error) {
-            if (error instanceof AuthError) {
-              return redirect(`/login?error=${error.type}`);
-            }
-            throw error;
-          }
-        }}
-      >
-        <h1 className="text-2xl font-semibold">{BRAND.fullName}</h1>
-
-        {error && (
-          <p className="rounded bg-red-50 p-3 text-sm text-red-600">
-            Invalid email or password
+    <div className="relative isolate flex min-h-screen items-center justify-center bg-primary/10 px-4 py-10">
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[url('/login-bg.jpg')] bg-cover bg-center"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-to-br from-black/55 to-black/25"
+      />
+      <div className="w-full max-w-sm rounded-xl bg-card/95 p-8 shadow-xl backdrop-blur-sm card-shadow">
+        <div className="mb-6 flex flex-col items-center gap-3 text-center">
+          <BrandLogo size="lg" />
+          <h1 className="text-xl font-semibold">{BRAND.fullName}</h1>
+          <p className="text-sm text-muted-foreground">
+            Zaloguj się, aby kontynuować
           </p>
-        )}
-
-        <div>
-          <label className="block text-sm font-medium" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="mt-1 w-full rounded border px-3 py-2"
-          />
         </div>
-
-        <div>
-          <label className="block text-sm font-medium" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="mt-1 w-full rounded border px-3 py-2"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full cursor-pointer rounded bg-black py-2 text-white hover:bg-gray-800"
-        >
-          Sign in
-        </button>
-      </form>
+        <LoginForm />
+      </div>
     </div>
   );
 }

@@ -4,9 +4,10 @@ import { compare } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema";
+import { BRAND } from "@/branding/config";
 
 // Hardcoded admin fallback (hackathon) — działa nawet bez rekordu w DB.
-const ADMIN_EMAIL = "admin@ethsilesia.pl";
+const ADMIN_EMAIL = BRAND.auth.adminEmail;
 const ADMIN_PASSWORD = "admin";
 
 const config: NextAuthConfig = {

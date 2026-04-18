@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { BRAND } from "@/branding/config";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function Navbar() {
   return (
-    <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
-      <Link href="/" className="text-lg font-semibold">
-        {BRAND.name}
+    <header className="flex items-center justify-between border-b border-border bg-white px-6 py-4">
+      <Link href="/" aria-label="TAURON — strona główna">
+        <BrandLogo />
       </Link>
       <Link
         href="/login"

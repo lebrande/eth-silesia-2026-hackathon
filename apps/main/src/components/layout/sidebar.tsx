@@ -7,12 +7,12 @@ import {
   MessagesSquare,
   AlertCircle,
   BookOpen,
-  Bot,
   Sparkles,
   Wrench,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/branding/config";
+import { BrandLogo } from "@/components/brand-logo";
 
 const items = [
   { href: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -28,9 +28,7 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-card">
       <div className="h-14 flex items-center gap-2.5 px-5 border-b border-border">
-        <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
-          <Bot className="h-4.5 w-4.5" strokeWidth={2.25} />
-        </div>
+        <BrandLogo size="sm" />
         <div className="flex flex-col leading-tight">
           <span className="text-sm font-semibold">
             {BRAND.backoffice.productLabel}

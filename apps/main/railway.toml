@@ -1,6 +1,6 @@
 [build]
 builder = "RAILPACK"
-buildCommand = "pnpm -F main build && cp -r apps/main/.next/static apps/main/.next/standalone/apps/main/.next/static"
+buildCommand = "pnpm -F main build && cp -r apps/main/.next/static apps/main/.next/standalone/apps/main/.next/static && cp -r apps/main/public apps/main/.next/standalone/apps/main/public"
 watchPatterns = ["/apps/main/**"]
 
 [deploy]

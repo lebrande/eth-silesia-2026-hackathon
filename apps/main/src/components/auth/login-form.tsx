@@ -36,7 +36,7 @@ export function LoginForm({ className }: { className?: string }) {
           type="password"
           required
           autoComplete="current-password"
-          defaultValue="admin123"
+          defaultValue="admin"
         />
       </div>
 

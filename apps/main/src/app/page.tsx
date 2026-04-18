@@ -8,12 +8,20 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        <section className="px-6 py-20 md:py-28">
-          <div className="mx-auto max-w-3xl text-center">
+        <section className="relative isolate overflow-hidden bg-primary/15 px-6 py-20 md:py-28">
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-[url('/hero.jpg')] bg-cover bg-center"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/35 to-black/20"
+          />
+          <div className="mx-auto max-w-3xl text-center text-white">
             <h1 className="mb-4 text-4xl font-semibold md:text-5xl">
               {BRAND.fullName}
             </h1>
-            <p className="mb-8 text-lg text-muted-foreground md:text-xl">
+            <p className="mb-8 text-lg text-white/85 md:text-xl">
               {BRAND.tagline}. Uzyskaj odpowiedź na pytanie o fakturę,
               licznik lub umowę w kilka sekund — bez czekania na konsultanta.
             </p>
@@ -26,7 +34,7 @@ export default function Home() {
               </Link>
               <Link
                 href="#jak-to-dziala"
-                className="text-base font-medium text-foreground hover:text-primary"
+                className="text-base font-medium text-white/90 hover:text-white"
               >
                 Jak to działa →
               </Link>
@@ -35,22 +43,26 @@ export default function Home() {
         </section>
 
         <section className="border-t border-border bg-white px-6 py-16">
-          <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-6xl">
             <h2 className="mb-10 text-center text-2xl font-semibold">
               Co potrafi nasz asystent
             </h2>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <Feature
-                title="Faktury i płatności"
-                body="Sprawdź saldo, terminy płatności i pobierz duplikat faktury bez logowania do eBOK."
+                title="Porównanie taryf G11/G12/G13"
+                body="Policzymy, która taryfa będzie dla Ciebie najtańsza na podstawie Twojego profilu zużycia."
               />
               <Feature
-                title="Zgłoszenia i umowy"
-                body="Zgłoś awarię, sprawdź status wniosku lub zadaj pytanie o warunki umowy — 24/7."
+                title="Analiza zużycia"
+                body="Zobacz miesięczny rozkład zużycia energii i anomalie, które warto sprawdzić."
               />
               <Feature
-                title="Przekazanie do konsultanta"
-                body="Gdy sprawa wymaga człowieka, asystent weryfikuje numer telefonu i przekazuje zgłoszenie dalej."
+                title="Zmiana umowy online"
+                body="Podpisz nową umowę bez wychodzenia z czatu — z potwierdzeniem kodem SMS."
+              />
+              <Feature
+                title="Głos i gwara śląska"
+                body="Odsłuchaj odpowiedzi asystenta i przełącz rozmowę na gwarę śląską."
               />
             </div>
           </div>
@@ -68,17 +80,17 @@ export default function Home() {
               <Step
                 n={1}
                 title="Zadaj pytanie"
-                body="Opisz swoją sprawę w naturalnym języku — tak jak rozmawiałbyś z konsultantem."
+                body="Opisz swoją sprawę w naturalnym języku."
               />
               <Step
                 n={2}
-                title="Otrzymaj odpowiedź"
-                body="Asystent przeszukuje bazę FAQ i dane konta, aby udzielić precyzyjnej odpowiedzi."
+                title="Zobacz odpowiedź i widżet"
+                body="Asystent odpowiada tekstem i pokazuje interaktywny widżet (np. porównanie taryf)."
               />
               <Step
                 n={3}
-                title="Załatw sprawę"
-                body="Jeżeli potrzeba — potwierdź numer telefonu i przekaż zgłoszenie konsultantowi."
+                title="Potwierdź i zakończ"
+                body="Jeżeli potrzeba — potwierdź kodem SMS i sprawa jest załatwiona."
               />
             </ol>
           </div>
@@ -86,11 +98,10 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-border bg-white px-6 py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 text-sm text-muted-foreground md:flex-row">
+        <div className="mx-auto flex max-w-5xl items-center justify-center text-sm text-muted-foreground">
           <span>
             © {new Date().getFullYear()} {BRAND.fullName}
           </span>
-          <span>Wersja demo — dane przykładowe</span>
         </div>
       </footer>
     </div>
