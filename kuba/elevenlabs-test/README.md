@@ -1,6 +1,6 @@
 # ElevenLabs Silesian test harness
 
-Reproducible harness that generates TTS audio for the 12-sentence Silesian corpus. Used to produce the audio evidence behind [`../thoughts/notes/elevenlabs-silesian-feasibility.md`](../thoughts/notes/elevenlabs-silesian-feasibility.md).
+Reproducible harness that generates TTS audio for the 12-sentence Silesian corpus. Used to produce the audio evidence behind [`../../thoughts/notes/elevenlabs-silesian-feasibility.md`](../../thoughts/notes/elevenlabs-silesian-feasibility.md).
 
 ## Recommended stack (after testing)
 
@@ -38,7 +38,7 @@ File naming: `{sentence-id}-stock-{variant}.mp3` (e.g. `09-stock-flash-raw.mp3`)
 
 ## Files
 
-- `sentences.mjs` — 12-sentence corpus. Must stay in sync with [`../thoughts/notes/silesian-examples.md`](../thoughts/notes/silesian-examples.md).
+- `sentences.mjs` — 12-sentence corpus. Must stay in sync with [`../../thoughts/notes/silesian-examples.md`](../../thoughts/notes/silesian-examples.md).
 - `generate.mjs` — main harness.
 - `silesian.pls` — pronunciation dictionary (**not used**; retained for reference only).
 - `upload-dict.mjs` — uploads the dictionary via the JSON rules endpoint (**not used**; retained for reference only).

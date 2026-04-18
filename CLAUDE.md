@@ -138,6 +138,8 @@ Typy generowane automatycznie z schema — `$inferSelect`, `$inferInsert`. Żadn
 AUTH_SECRET=<openssl rand -base64 32>
 API_SECRET_KEY=<secret>
 DATABASE_URL=postgresql://...
+ELEVENLABS_API_KEY=<from elevenlabs.io>
+ELEVENLABS_VOICE_ID=hIssydxXZ1WuDorjx6Ic   # Mazovian Adam (default)
 LANGSMITH_TRACING=true              # optional
 LANGSMITH_API_KEY=ls_...            # optional
 ```

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { sendChatMessageAction } from "@/lib/actions/chat.action";
+import { ReadAloudButton } from "@/components/ReadAloudButton.client";
 
 type Message = { role: "user" | "bot"; content: string };
 
@@ -82,7 +83,10 @@ export function ChatWidget() {
                     : "bg-gray-100 text-gray-900"
                 }`}
               >
-                {m.content}
+                <div className="flex items-start gap-2">
+                  <span className="flex-1">{m.content}</span>
+                  <ReadAloudButton text={m.content} className="mt-0.5" />
+                </div>
               </div>
             ))}
             {sending && (
