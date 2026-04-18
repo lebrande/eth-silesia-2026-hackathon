@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { signIn, auth } from "@/auth";
+import { BRAND } from "@/branding/config";
 
 export default async function LoginPage(props: {
   searchParams: Promise<{ error?: string }>;
@@ -31,7 +32,7 @@ export default async function LoginPage(props: {
           }
         }}
       >
-        <h1 className="text-2xl font-semibold">Eth Silesia</h1>
+        <h1 className="text-2xl font-semibold">{BRAND.fullName}</h1>
 
         {error && (
           <p className="rounded bg-red-50 p-3 text-sm text-red-600">

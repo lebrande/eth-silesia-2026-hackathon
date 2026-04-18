@@ -6,6 +6,7 @@ import { users } from "@/db/schema";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import type { BackofficeUser } from "@/lib/types";
+import { BRAND } from "@/branding/config";
 
 export default async function AppLayout({
   children,
