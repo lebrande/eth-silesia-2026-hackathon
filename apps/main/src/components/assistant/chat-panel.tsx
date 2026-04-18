@@ -230,6 +230,32 @@ export function AssistantChatPanel({
   );
 }
 
+const LINK_REGEX = /(https?:\/\/[^\s)]+|\/app\/[A-Za-z0-9/_\-]+)/g;
+
+function renderWithLinks(text: string, isUser: boolean) {
+  const parts = text.split(LINK_REGEX);
+  return parts.map((part, i) => {
+    if (i % 2 === 1) {
+      const href = part;
+      return (
+        <a
+          key={i}
+          href={href}
+          target={href.startsWith("http") ? "_blank" : undefined}
+          rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+          className={cn(
+            "underline underline-offset-2 break-all",
+            isUser ? "text-primary-foreground" : "text-primary hover:text-primary/80",
+          )}
+        >
+          {href}
+        </a>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
 function MessageBubble({
   role,
   content,
@@ -270,7 +296,7 @@ function MessageBubble({
           pulse && "animate-pulse",
         )}
       >
-        {content}
+        {renderWithLinks(content, isUser)}
       </div>
     </div>
   );

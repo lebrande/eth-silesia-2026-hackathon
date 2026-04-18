@@ -131,7 +131,7 @@ export function createFaqTools(_ctx: BackofficeAgentContext) {
         return "question i answer nie mogą być puste.";
       }
       const row = await createFaq(_ctx.user.id, input);
-      return `Utworzono wpis FAQ id=${row.id}.\n${formatFaq(row, { full: true })}`;
+      return `Utworzono wpis FAQ id=${row.id}.\nSzczegóły / edycja: /app/faq/${row.id}\n${formatFaq(row, { full: true })}`;
     },
     {
       name: "create_faq",
@@ -175,7 +175,7 @@ export function createFaqTools(_ctx: BackofficeAgentContext) {
       };
       const row = await updateFaq(args.id, input);
       if (!row) return `Update FAQ id=${args.id} nie powiódł się.`;
-      return `Zaktualizowano FAQ id=${row.id}.\n${formatFaq(row, { full: true })}`;
+      return `Zaktualizowano FAQ id=${row.id}.\nSzczegóły / edycja: /app/faq/${row.id}\n${formatFaq(row, { full: true })}`;
     },
     {
       name: "update_faq",
