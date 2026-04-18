@@ -4,7 +4,10 @@
   "scripts": {
     "dev": "pnpm -F main dev",
     "build": "pnpm -F main build",
-    "start": "pnpm -F main start"
+    "start": "pnpm -F main start",
+    "typecheck": "pnpm -F main typecheck",
+    "db:seed-faq": "pnpm -F main db:seed-faq",
+    "db:ensure-tables": "pnpm -F main db:ensure-tables"
   },
   "devDependencies": {
     "typescript": "^5.7.0"
