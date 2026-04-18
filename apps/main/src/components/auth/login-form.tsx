@@ -6,6 +6,7 @@ import { Input, Label } from "@/components/ui/input";
 import { loginAction, type LoginState } from "@/lib/actions/auth.action";
 import { cn } from "@/lib/utils";
 import { AlertCircle } from "lucide-react";
+import { BRAND } from "@/branding/config";
 
 export function LoginForm({ className }: { className?: string }) {
   const [state, formAction, pending] = useActionState<LoginState, FormData>(
@@ -23,7 +24,7 @@ export function LoginForm({ className }: { className?: string }) {
           type="email"
           required
           autoComplete="email"
-          defaultValue="admin@eth-silesia.local"
+          defaultValue={BRAND.auth.defaultLoginEmail}
           placeholder="ty@firma.pl"
         />
       </div>

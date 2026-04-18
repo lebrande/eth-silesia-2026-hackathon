@@ -12,6 +12,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BRAND } from "@/branding/config";
 
 const items = [
   { href: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -31,9 +32,11 @@ export function Sidebar() {
           <Bot className="h-4.5 w-4.5" strokeWidth={2.25} />
         </div>
         <div className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold">Backoffice AI</span>
+          <span className="text-sm font-semibold">
+            {BRAND.backoffice.productLabel}
+          </span>
           <span className="text-[11px] text-muted-foreground truncate max-w-[160px]">
-            ETH Silesia 2026
+            {BRAND.backoffice.tenantLabel}
           </span>
         </div>
       </div>

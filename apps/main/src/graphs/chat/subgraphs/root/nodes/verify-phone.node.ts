@@ -3,6 +3,7 @@ import { getMessage } from "../../../chat.messages";
 import { AUTH_CODE_TTL_MS } from "../../../chat.constants";
 import { getLastUserMessageContent } from "@/lib/messages.shared";
 import { sendSms } from "@/lib/server/sms.server";
+import { BRAND } from "@/branding/config";
 import type { ChatStateType } from "../../../chat.state";
 
 function extractPhoneNumber(text: string): string | null {
@@ -49,7 +50,10 @@ export async function verifyPhoneNode(state: ChatStateType): Promise<Command> {
   const expiresAt = Date.now() + AUTH_CODE_TTL_MS;
 
   console.log(`[auth] Verification code for ${phone}: ${code}`);
-  await sendSms(phone, `Eth Silesia - Twój kod weryfikacyjny: ${code}`);
+  await sendSms(
+    phone,
+    `${BRAND.sms.senderTag} - Twój kod weryfikacyjny: ${code}`,
+  );
 
   return new Command({
     update: {
