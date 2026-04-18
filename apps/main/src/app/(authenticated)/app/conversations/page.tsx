@@ -54,7 +54,7 @@ export default async function ConversationsPage({
             <div className="flex gap-1 rounded-md border border-border bg-muted/40 p-1 self-start">
               {[
                 { v: "all", label: "Wszystkie" },
-                { v: "escalated", label: "Zeskalowane" },
+                { v: "escalated", label: "Przekazane" },
                 { v: "flagged", label: "Oznaczone" },
               ].map((opt) => (
                 <label
@@ -155,7 +155,7 @@ export default async function ConversationsPage({
                           {c.escalated ? (
                             <Badge variant="danger">
                               <AlertTriangle className="h-3 w-3" />
-                              eskalacja
+                              przekazana
                             </Badge>
                           ) : (
                             <Badge variant="success">ok</Badge>

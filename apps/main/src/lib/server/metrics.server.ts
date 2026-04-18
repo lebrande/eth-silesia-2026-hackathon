@@ -1,16 +1,39 @@
 import "server-only";
 import { count, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { chatSessions, faqEntries, messageFlags } from "@/db/schema";
+import {
+  chatSessions,
+  faqEntries,
+  messageFlags,
+  widgetDefinitions,
+} from "@/db/schema";
+import { ensureBackofficeTables } from "@/db/ensure-tables";
 import {
   getLastUserQuestion,
   getUserQuestionBeforeMessage,
 } from "@/lib/server/chat-backoffice.server";
+import {
+  DASHBOARD_COUNT_MOCKS,
+  mergeLanguagesWithMock,
+  mergeProblematicWithMock,
+  mergeTimeseriesWithMock,
+  mergeWidgetKindsWithMock,
+} from "@/lib/server/dashboard-mocks";
 import type {
   KpiTimeseriesPoint,
   ProblematicQuestion,
   ProblematicReason,
 } from "@/lib/types";
+import type {
+  WidgetLeafNode,
+  WidgetNode,
+  WidgetSpec,
+} from "@/lib/widget-builder/schema";
+
+export type WidgetKindUsage = {
+  kind: string;
+  count: number;
+};
 
 const DAY_MS = 24 * 3600 * 1000;
 
@@ -27,12 +50,40 @@ export type DashboardSnapshot = {
   totalFlags: number;
   faqCount: number;
   totalUsers: number;
+  widgetCount: number;
+  widgetsCreated30d: number;
+  widgetTopKinds: WidgetKindUsage[];
   timeseries: KpiTimeseriesPoint[];
   languages: Array<{ language: string; count: number }>;
   topProblematic: ProblematicQuestion[];
 };
 
+function walkWidgetNodes(nodes: WidgetNode[], onKind: (kind: string) => void) {
+  for (const node of nodes) {
+    onKind(node.kind);
+    if (node.kind === "columns") {
+      for (const col of node.children) {
+        for (const leaf of col as WidgetLeafNode[]) onKind(leaf.kind);
+      }
+    }
+  }
+}
+
+function countWidgetKinds(specs: WidgetSpec[]): WidgetKindUsage[] {
+  const counter = new Map<string, number>();
+  for (const spec of specs) {
+    if (!spec || !Array.isArray(spec.nodes)) continue;
+    walkWidgetNodes(spec.nodes, (kind) => {
+      counter.set(kind, (counter.get(kind) ?? 0) + 1);
+    });
+  }
+  return Array.from(counter.entries())
+    .map(([kind, c]) => ({ kind, count: c }))
+    .sort((a, b) => b.count - a.count);
+}
+
 export async function buildDashboard(): Promise<DashboardSnapshot> {
+  await ensureBackofficeTables();
   const [
     [totalConv],
     [today],
@@ -44,6 +95,9 @@ export async function buildDashboard(): Promise<DashboardSnapshot> {
     [verified],
     [totalFlagsRow],
     [faqCount],
+    [widgetTotal],
+    [widgetsNew30d],
+    widgetSpecs,
   ] = await Promise.all([
     db.select({ v: count() }).from(chatSessions),
     db
@@ -80,10 +134,34 @@ export async function buildDashboard(): Promise<DashboardSnapshot> {
       .where(sql`${chatSessions.verifiedPhone} IS NOT NULL`),
     db.select({ v: count() }).from(messageFlags),
     db.select({ v: count() }).from(faqEntries),
+    db.select({ v: count() }).from(widgetDefinitions),
+    db
+      .select({ v: count() })
+      .from(widgetDefinitions)
+      .where(
+        sql`${widgetDefinitions.createdAt} >= now() - interval '30 days'`,
+      ),
+    db.select({ spec: widgetDefinitions.spec }).from(widgetDefinitions),
   ]);
 
-  const escalationRate30d = in30.v > 0 ? esc30.v / in30.v : 0;
-  const escalationRate7d = in7.v > 0 ? esc7.v / in7.v : 0;
+  const conversationsTodayMerged = today.v + DASHBOARD_COUNT_MOCKS.conversationsToday;
+  const conversations7dMerged = in7.v + DASHBOARD_COUNT_MOCKS.conversations7d;
+  const conversations30dMerged = in30.v + DASHBOARD_COUNT_MOCKS.conversations30d;
+  const totalConversationsMerged =
+    totalConv.v + DASHBOARD_COUNT_MOCKS.totalConversations;
+  const escalated30dMerged = esc30.v + DASHBOARD_COUNT_MOCKS.escalated30d;
+  const escalated7dMerged = esc7.v + DASHBOARD_COUNT_MOCKS.escalated7d;
+
+  const escalationRate30d =
+    conversations30dMerged > 0 ? escalated30dMerged / conversations30dMerged : 0;
+  const escalationRate7d =
+    conversations7dMerged > 0 ? escalated7dMerged / conversations7dMerged : 0;
+
+  const widgetTopKinds = mergeWidgetKindsWithMock(
+    countWidgetKinds(
+      widgetSpecs.map((r) => r.spec).filter((s): s is WidgetSpec => !!s),
+    ),
+  );
 
   const languages = await db
     .select({
@@ -119,7 +197,7 @@ export async function buildDashboard(): Promise<DashboardSnapshot> {
     ]),
   );
 
-  const timeseries: KpiTimeseriesPoint[] = [];
+  const realTimeseries: KpiTimeseriesPoint[] = [];
   const now = Date.now();
   for (let i = 29; i >= 0; i--) {
     const d = new Date(now - i * DAY_MS);
@@ -127,33 +205,39 @@ export async function buildDashboard(): Promise<DashboardSnapshot> {
     const data = byDay.get(key);
     const conversations = data?.conversations ?? 0;
     const escalated = data?.escalated ?? 0;
-    timeseries.push({
+    realTimeseries.push({
       date: key,
       conversations,
       escalationRate: conversations > 0 ? escalated / conversations : 0,
       messages: data?.messages ?? 0,
     });
   }
+  const timeseries = mergeTimeseriesWithMock(realTimeseries);
 
   const topProblematic = (await buildProblematicQuestions()).slice(0, 10);
 
   return {
-    conversationsToday: today.v,
-    conversations7d: in7.v,
-    conversations30d: in30.v,
-    totalConversations: totalConv.v,
+    conversationsToday: conversationsTodayMerged,
+    conversations7d: conversations7dMerged,
+    conversations30d: conversations30dMerged,
+    totalConversations: totalConversationsMerged,
     escalationRate30d,
     escalationRate7d,
     deflectionRate30d: Math.max(0, 1 - escalationRate30d),
-    blockedCount: blocked.v,
-    verifiedCount: verified.v,
-    totalFlags: totalFlagsRow.v,
+    blockedCount: blocked.v + DASHBOARD_COUNT_MOCKS.blocked,
+    verifiedCount: verified.v + DASHBOARD_COUNT_MOCKS.verified,
+    totalFlags: totalFlagsRow.v + DASHBOARD_COUNT_MOCKS.totalFlags,
     faqCount: faqCount.v,
     totalUsers: 0,
+    widgetCount: widgetTotal.v + DASHBOARD_COUNT_MOCKS.widgetCount,
+    widgetsCreated30d: widgetsNew30d.v + DASHBOARD_COUNT_MOCKS.widgetsCreated30d,
+    widgetTopKinds,
     timeseries,
-    languages: languages
-      .filter((l): l is { language: string; count: number } => !!l.language)
-      .map((l) => ({ language: l.language, count: Number(l.count) })),
+    languages: mergeLanguagesWithMock(
+      languages
+        .filter((l): l is { language: string; count: number } => !!l.language)
+        .map((l) => ({ language: l.language, count: Number(l.count) })),
+    ),
     topProblematic,
   };
 }
@@ -250,8 +334,6 @@ export async function buildProblematicQuestions(): Promise<
     }
   }
 
-  return Array.from(map.values()).sort((a, b) => {
-    if (b.occurrences !== a.occurrences) return b.occurrences - a.occurrences;
-    return b.lastSeenAt.getTime() - a.lastSeenAt.getTime();
-  });
+  const real = Array.from(map.values());
+  return mergeProblematicWithMock(real);
 }

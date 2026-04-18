@@ -27,17 +27,16 @@ const WELCOME: Msg = {
   role: "bot",
   content:
     "Cześć! Jestem asystentem backoffice. Poproś mnie np.:\n" +
-    "• „pokaż najnowsze eskalowane rozmowy”,\n" +
+    "• „pokaż najnowsze rozmowy przekazane do operatora”,\n" +
     "• „wyszukaj FAQ o fakturach”,\n" +
     "• „dopisz FAQ: jak sprawdzić stan licznika”,\n" +
-    "• „daj listę problematycznych pytań”,\n" +
-    "• „jakie mamy statystyki dzisiaj?”.",
+    "• „daj listę problematycznych pytań”,\n",
 };
 
 const SUGGESTIONS = [
   "Pokaż statystyki (get_dashboard_stats)",
   "Top 5 problematycznych pytań",
-  "Lista ostatnich eskalowanych rozmów",
+  "Lista rozmów przekazanych do operatora",
   "Wyszukaj FAQ: faktura",
 ];
 
@@ -150,7 +149,7 @@ export function AssistantChatPanel({
   );
 
   return (
-    <div className="flex h-[calc(100dvh-10rem)] min-h-[560px] flex-col rounded-xl border border-border bg-card">
+    <div className="flex h-full min-h-[500px] flex-col rounded-xl border border-border bg-card">
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
         <div className="flex items-center gap-2 min-w-0">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -176,9 +175,7 @@ export function AssistantChatPanel({
         {messages.map((m) => (
           <MessageBubble key={m.id} role={m.role} content={m.content} />
         ))}
-        {pending && (
-          <MessageBubble role="bot" content="…" pulse />
-        )}
+        {pending && <MessageBubble role="bot" content="…" pulse />}
       </div>
 
       {error && (
@@ -195,7 +192,7 @@ export function AssistantChatPanel({
               type="button"
               onClick={() => send(s)}
               disabled={pending}
-              className="rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[11px] text-foreground/75 transition-colors hover:bg-muted disabled:opacity-50"
+              className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs text-foreground/75 transition-colors hover:bg-muted disabled:opacity-50"
             >
               {s}
             </button>
@@ -214,13 +211,9 @@ export function AssistantChatPanel({
             placeholder="Napisz polecenie (Enter wysyła, Shift+Enter nowa linia)…"
             rows={2}
             disabled={pending}
-            className="flex-1 resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 disabled:opacity-60"
+            className="flex-1 resize-none rounded-md border border-border bg-background px-3 py-2 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 disabled:opacity-60"
           />
-          <Button
-            type="submit"
-            disabled={!input.trim() || pending}
-            size="md"
-          >
+          <Button type="submit" disabled={!input.trim() || pending} size="md">
             <Send className="h-4 w-4" />
             Wyślij
           </Button>
@@ -245,7 +238,9 @@ function renderWithLinks(text: string, isUser: boolean) {
           rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
           className={cn(
             "underline underline-offset-2 break-all",
-            isUser ? "text-primary-foreground" : "text-primary hover:text-primary/80",
+            isUser
+              ? "text-primary-foreground"
+              : "text-primary hover:text-primary/80",
           )}
         >
           {href}
@@ -276,9 +271,7 @@ function MessageBubble({
       <div
         className={cn(
           "flex h-7 w-7 shrink-0 items-center justify-center rounded-md",
-          isUser
-            ? "bg-primary/10 text-primary"
-            : "bg-muted text-foreground/70",
+          isUser ? "bg-primary/10 text-primary" : "bg-muted text-foreground/70",
         )}
       >
         {isUser ? (
@@ -289,7 +282,7 @@ function MessageBubble({
       </div>
       <div
         className={cn(
-          "max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm leading-relaxed",
+          "max-w-[80%] whitespace-pre-wrap rounded-lg px-3.5 py-2.5 text-base leading-relaxed",
           isUser
             ? "bg-primary text-primary-foreground"
             : "bg-muted/60 text-foreground",

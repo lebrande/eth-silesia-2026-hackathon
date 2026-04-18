@@ -3,8 +3,8 @@ import { buildDashboard } from "@/lib/server/metrics.server";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import {
   ConversationsChart,
-  EscalationRateChart,
   MessagesChart,
+  WidgetKindsChart,
 } from "@/components/dashboard/charts";
 import {
   Card,
@@ -19,12 +19,12 @@ import { PageHeader } from "@/components/layout/page-header";
 import { formatPercent, formatRelative } from "@/lib/utils";
 import {
   MessagesSquare,
-  AlertTriangle,
   ShieldCheck,
   Flag,
   ArrowRight,
   BookOpen,
   Languages,
+  Wrench,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -48,16 +48,15 @@ export default async function DashboardPage() {
           tone="default"
         />
         <KpiCard
-          label="Escalation rate"
-          value={formatPercent(snap.escalationRate30d)}
-          sublabel={`7 dni: ${formatPercent(snap.escalationRate7d)}`}
-          icon={AlertTriangle}
-          tone="danger"
-          delta={{
-            value: (snap.escalationRate7d - snap.escalationRate30d) * 100,
-            label: "7d vs 30d",
-            goodDirection: "down",
-          }}
+          label="Widgety agenta"
+          value={snap.widgetCount}
+          sublabel={
+            snap.widgetsCreated30d > 0
+              ? `+${snap.widgetsCreated30d} w ostatnich 30 dniach`
+              : "Brak nowych w ostatnich 30 dniach"
+          }
+          icon={Wrench}
+          tone="info"
         />
         <KpiCard
           label="Deflection rate"
@@ -122,14 +121,27 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
-          <CardHeader>
-            <CardTitle>Escalation vs deflection</CardTitle>
-            <CardDescription>
-              % zeskalowanych (czerwony) vs deflection rate (zielony), 30 dni.
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle>
+                <span className="inline-flex items-center gap-2">
+                  <Wrench className="h-4 w-4" /> Popularne klocki widgetów
+                </span>
+              </CardTitle>
+              <CardDescription>
+                Top 8 typów primitives używanych w zapisanych widgetach (po
+                rozwinięciu kolumn).
+              </CardDescription>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/app/tools">
+                Zarządzaj
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </CardHeader>
           <CardContent>
-            <EscalationRateChart data={snap.timeseries} />
+            <WidgetKindsChart data={snap.widgetTopKinds} />
           </CardContent>
         </Card>
 
@@ -184,9 +196,6 @@ export default async function DashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle>Top problematyczne pytania</CardTitle>
-              <CardDescription>
-                Z escalated sesji i flag agenta. Kliknij, aby dodać do FAQ.
-              </CardDescription>
             </div>
             <Button variant="outline" size="sm" asChild>
               <Link href="/app/problems">
@@ -224,7 +233,12 @@ export default async function DashboardPage() {
                         )}
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" asChild className="shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="shrink-0"
+                    >
                       <Link
                         href={`/app/faq/new?question=${encodeURIComponent(q.question)}`}
                       >

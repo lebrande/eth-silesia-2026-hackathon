@@ -1,9 +1,23 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { MODELS } from "@/lib/models.shared";
+
+export const EMBEDDING_MODEL = "text-embedding-3-small";
+export const EMBEDDING_DIMENSIONS = 1536;
 
 export function createLLM(model: string = MODELS.SONNET) {
   return new ChatOpenAI({
     model,
+    configuration: {
+      baseURL: process.env.LITELLM_BASE_URL,
+    },
+    apiKey: process.env.LITELLM_API_KEY,
+  });
+}
+
+export function createEmbeddings(model: string = EMBEDDING_MODEL) {
+  return new OpenAIEmbeddings({
+    model,
+    dimensions: EMBEDDING_DIMENSIONS,
     configuration: {
       baseURL: process.env.LITELLM_BASE_URL,
     },

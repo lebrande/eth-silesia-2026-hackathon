@@ -6,10 +6,12 @@ export const dynamic = "force-dynamic";
 
 export default function AssistantPage() {
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title="Asystent AI" />
+    <div className="flex h-[calc(100dvh-6rem)] flex-col gap-4">
+      <div className="shrink-0">
+        <PageHeader title="Asystent AI" />
+      </div>
 
-      <details className="group rounded-lg border border-border bg-card">
+      <details className="group shrink-0 rounded-lg border border-border bg-card">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium hover:bg-muted/40">
           <span>Co potrafi agent?</span>
           <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
@@ -31,7 +33,7 @@ export default function AssistantPage() {
             <Section
               title="Rozmowy"
               items={[
-                "list_recent_conversations — filtr po eskalacji, flagach, wyszukiwaniu",
+                "list_recent_conversations — filtr po przekazaniach do operatora, flagach, wyszukiwaniu",
                 "get_conversation — pełna historia wiadomości z LangGraph",
                 "flag_message — oznaczenie wiadomości AI jako problematycznej",
               ]}
@@ -51,7 +53,9 @@ export default function AssistantPage() {
         </div>
       </details>
 
-      <AssistantChatPanel initialThreadId={null} />
+      <div className="min-h-0 flex-1">
+        <AssistantChatPanel initialThreadId={null} />
+      </div>
     </div>
   );
 }

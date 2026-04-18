@@ -60,7 +60,7 @@ export default async function ConversationDetailPage({
             <>
               {conv.escalated ? (
                 <Badge variant="danger">
-                  <AlertTriangle className="h-3 w-3" /> eskalacja
+                  <AlertTriangle className="h-3 w-3" /> przekazana
                 </Badge>
               ) : (
                 <Badge variant="success">ok</Badge>

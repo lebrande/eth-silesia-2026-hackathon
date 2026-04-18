@@ -44,7 +44,7 @@ export default async function ProblemsPage({
     <div className="space-y-6">
       <PageHeader
         title="Problematyczne pytania"
-        description="Zagregowane pytania z sesji zeskalowanych oraz wiadomości oznaczonych przez agenta. Dodaj brakujące FAQ, żeby zamknąć lukę w bazie wiedzy."
+        description="Zagregowane pytania z sesji przekazanych do operatora oraz wiadomości oznaczonych przez agenta. Dodaj brakujące FAQ, żeby zamknąć lukę w bazie wiedzy."
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -81,7 +81,7 @@ export default async function ProblemsPage({
             <div className="flex gap-1 rounded-md border border-border bg-muted/40 p-1 self-start">
               {[
                 { v: "all", label: "Wszystkie" },
-                { v: "escalation", label: "Z eskalacji" },
+                { v: "escalation", label: "Przekazane" },
                 { v: "flagged", label: "Oznaczone" },
                 { v: "uncovered", label: "Bez FAQ" },
               ].map((opt) => (
@@ -146,7 +146,7 @@ export default async function ProblemsPage({
                     <TD>
                       <div className="flex flex-wrap gap-1">
                         {p.reasons.includes("escalation") ? (
-                          <Badge variant="danger">eskalacja</Badge>
+                          <Badge variant="danger">przekazana</Badge>
                         ) : null}
                         {p.reasons.includes("agent_flag") ? (
                           <Badge variant="warning">agent</Badge>

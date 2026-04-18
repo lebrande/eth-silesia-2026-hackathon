@@ -8,6 +8,7 @@ import {
   createFaq,
   deleteFaq,
   getFaq,
+  searchFaqSemantic,
   updateFaq,
   type FaqInput,
 } from "@/lib/server/faq.server";
@@ -91,6 +92,50 @@ export function createFaqTools(_ctx: BackofficeAgentContext) {
           .string()
           .min(1)
           .describe("Fragment pytania / odpowiedzi / tagu / kategorii"),
+        limit: z
+          .number()
+          .int()
+          .min(1)
+          .max(20)
+          .optional()
+          .describe("Maks. liczba wyników (domyślnie 5, max 20)"),
+      }),
+    },
+  );
+
+  const searchFaqSemanticTool = tool(
+    async ({ query, limit }) => {
+      const lim = Math.min(Math.max(limit ?? 5, 1), 20);
+      const q = query.trim();
+      if (!q) {
+        return "Podaj niepuste zapytanie.";
+      }
+      try {
+        const hits = await searchFaqSemantic(q, lim);
+        if (hits.length === 0) {
+          return `Brak semantycznych trafień dla "${q}". Spróbuj search_faq (keyword) jako fallback.`;
+        }
+        const formatted = hits
+          .map(
+            (r) =>
+              `similarity=${r.similarity.toFixed(3)} | ${formatFaq(r, { full: false })}`,
+          )
+          .join("\n---\n");
+        return `Znaleziono ${hits.length} semantycznych trafień dla "${q}":\n${formatted}`;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "nieznany błąd";
+        return `Błąd semantycznego wyszukiwania: ${msg}. Spróbuj search_faq (keyword) jako fallback.`;
+      }
+    },
+    {
+      name: "search_faq_semantic",
+      description:
+        "Semantyczne (wektorowe) wyszukiwanie FAQ po pgvector + text-embedding-3-small. Używaj preferencyjnie dla pytań o wiedzę z bazy — lepiej radzi sobie z parafrazami i synonimami niż keyword search_faq. Zwraca top-N trafień z polem similarity (0..1, wyżej = lepiej).",
+      schema: z.object({
+        query: z
+          .string()
+          .min(1)
+          .describe("Zapytanie w języku naturalnym (może być parafrazą)"),
         limit: z
           .number()
           .int()
@@ -208,5 +253,12 @@ export function createFaqTools(_ctx: BackofficeAgentContext) {
     },
   );
 
-  return [searchFaq, getFaqTool, createFaqTool, updateFaqTool, deleteFaqTool];
+  return [
+    searchFaqSemanticTool,
+    searchFaq,
+    getFaqTool,
+    createFaqTool,
+    updateFaqTool,
+    deleteFaqTool,
+  ];
 }
