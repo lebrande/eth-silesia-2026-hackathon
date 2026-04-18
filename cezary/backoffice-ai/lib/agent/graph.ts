@@ -35,9 +35,12 @@ export function mapAssistantMessages(messages: BaseMessage[]): AssistantMessage[
     }));
 }
 
-function buildGraph(ctx: BackofficeAgentContext) {
-  const systemPrompt = getAssistantSystemPrompt({ user: ctx.user });
-  const tools = createBackofficeTools(ctx);
+async function buildGraph(ctx: BackofficeAgentContext) {
+  const tools = await createBackofficeTools(ctx);
+  const systemPrompt = getAssistantSystemPrompt({
+    user: ctx.user,
+    toolNames: tools.map((t) => t.name),
+  });
   const llm = createAssistantLLM().bindTools(tools);
 
   return new StateGraph(AssistantState)
@@ -62,7 +65,8 @@ export async function invokeAssistant(input: {
   history: AssistantMessage[];
 }> {
   const checkpointer = await getCheckpointer();
-  const app = buildGraph({ user: input.user }).compile({ checkpointer });
+  const graph = await buildGraph({ user: input.user });
+  const app = graph.compile({ checkpointer });
 
   const result = (await app.invoke(
     { messages: [{ role: "user", content: input.message }] },

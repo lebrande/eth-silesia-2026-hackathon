@@ -9,6 +9,7 @@ import {
   BookOpen,
   Bot,
   Sparkles,
+  Wrench,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ const items = [
   { href: "/conversations", label: "Rozmowy", icon: MessagesSquare },
   { href: "/problems", label: "Problematyczne pytania", icon: AlertCircle },
   { href: "/faq", label: "Baza wiedzy (FAQ)", icon: BookOpen },
+  { href: "/tools", label: "Custom tools", icon: Wrench },
 ];
 
 export function Sidebar() {

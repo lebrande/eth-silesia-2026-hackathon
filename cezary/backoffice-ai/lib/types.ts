@@ -80,3 +80,31 @@ export type KpiTimeseriesPoint = {
   escalationRate: number;
   messages: number;
 };
+
+export type CustomToolParamType = "number" | "string";
+
+export type CustomToolParam = {
+  name: string;
+  type: CustomToolParamType;
+  description?: string;
+  required?: boolean;
+  default?: number | string | null;
+};
+
+export type CustomToolRow = {
+  id: string;
+  name: string;
+  description: string;
+  parameters: CustomToolParam[];
+  formula: string;
+  responseTemplate: string | null;
+  enabled: boolean;
+  createdByUserId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CustomToolRunOutput = {
+  result: number | string;
+  rendered: string;
+};
