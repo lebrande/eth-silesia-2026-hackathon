@@ -6,6 +6,9 @@ const ADMIN_EMAIL = "admin@ethsilesia.pl";
 const ADMIN_PASSWORD = "admin";
 
 const config: NextAuthConfig = {
+  // Trust forwarded headers from Railway/Vercel reverse proxy.
+  // Without this, Auth.js rejects the internal 0.0.0.0:8080 host as UntrustedHost.
+  trustHost: true,
   session: {
     strategy: "jwt",
     maxAge: 48 * 60 * 60,
