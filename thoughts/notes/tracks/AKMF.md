@@ -13,6 +13,10 @@ Zbudowaliśmy chatbota AI dla obsługi klienta Tauron z pełnowymiarowym modelem
 
 ---
 
+## Treść zadania
+
+In this category, we will assess your approach to Security by Design architecture, meaning how effectively the system protects itself against attacks. We will focus on the correctness of authorization (IAM), secure secrets management, and whether the infrastructure (servers, containers, APIs) is resistant to common vulnerabilities from the OWASP list. Key factors will also include data encryption and the presence of monitoring mechanisms that allow for quick detection and stopping of a potential data leak.
+
 ## 1. Mapowanie na kryteria AKMF
 
 | Kryterium AKMF | Nasz mechanizm | Dowód (plik:linia) |
