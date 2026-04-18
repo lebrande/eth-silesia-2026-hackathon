@@ -8,11 +8,13 @@ import {
   AlertCircle,
   BookOpen,
   Bot,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/assistant", label: "Asystent AI", icon: Sparkles },
   { href: "/conversations", label: "Rozmowy", icon: MessagesSquare },
   { href: "/problems", label: "Problematyczne pytania", icon: AlertCircle },
   { href: "/faq", label: "Baza wiedzy (FAQ)", icon: BookOpen },
