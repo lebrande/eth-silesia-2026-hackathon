@@ -81,30 +81,16 @@ export type KpiTimeseriesPoint = {
   messages: number;
 };
 
-export type CustomToolParamType = "number" | "string";
+import type { WidgetSpec } from "@/lib/widget-builder/schema";
 
-export type CustomToolParam = {
-  name: string;
-  type: CustomToolParamType;
-  description?: string;
-  required?: boolean;
-  default?: number | string | null;
-};
-
-export type CustomToolRow = {
+export type WidgetDefinitionRow = {
   id: string;
   name: string;
   description: string;
-  parameters: CustomToolParam[];
-  formula: string;
-  responseTemplate: string | null;
-  enabled: boolean;
+  scenario: string;
+  spec: WidgetSpec;
   createdByUserId: string | null;
+  createdByUserEmail: string | null;
   createdAt: Date;
   updatedAt: Date;
-};
-
-export type CustomToolRunOutput = {
-  result: number | string;
-  rendered: string;
 };

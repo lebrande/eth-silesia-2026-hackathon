@@ -36,7 +36,7 @@ export function mapAssistantMessages(messages: BaseMessage[]): AssistantMessage[
 }
 
 async function buildGraph(ctx: BackofficeAgentContext) {
-  const tools = await createBackofficeTools(ctx);
+  const tools = createBackofficeTools(ctx);
   const systemPrompt = getAssistantSystemPrompt({
     user: ctx.user,
     toolNames: tools.map((t) => t.name),
