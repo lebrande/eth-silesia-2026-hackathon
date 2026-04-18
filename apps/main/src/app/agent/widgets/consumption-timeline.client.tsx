@@ -88,11 +88,11 @@ export function ConsumptionTimelineWidget({
         <CardTitle>Twoje zużycie</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-56 w-full">
+        <div className="h-48 w-full sm:h-56">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+              margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
             >
               <CartesianGrid vertical={false} stroke="oklch(0.92 0.01 260)" />
               <XAxis
@@ -108,7 +108,7 @@ export function ConsumptionTimelineWidget({
                 axisLine={false}
                 tickLine={false}
                 unit=" kWh"
-                width={60}
+                width={56}
               />
               <Tooltip
                 content={renderTooltip}

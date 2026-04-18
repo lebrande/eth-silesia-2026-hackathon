@@ -58,7 +58,7 @@ export function TariffComparatorWidget({
   }
 
   return (
-    <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-3">
+    <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
       {data.tariffs.map((t) => {
         const isSelected = selectedCode === t.code;
         const locked = selectedCode !== null || sending;
@@ -82,7 +82,7 @@ export function TariffComparatorWidget({
               </div>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-2">
-              <div className="text-2xl font-semibold">
+              <div className="text-xl font-semibold wrap-break-word sm:text-2xl">
                 {formatPln(t.annualCostPLN)}
                 <span className="text-sm font-normal text-muted-foreground">
                   {" "}

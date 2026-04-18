@@ -85,16 +85,20 @@ export function ContractSigningWidget({
             <div className="flex items-center gap-2 text-sm text-success">
               <Check className="h-4 w-4" /> Warunki zaakceptowane
             </div>
-            <div className="flex items-start gap-4">
-              <div className="text-primary">
+            <div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:items-start sm:gap-4">
+              <div className="self-center text-primary sm:self-auto">
                 <MockQr size={120} />
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex w-full flex-col gap-2">
                 <p className="text-sm text-muted-foreground">
                   Zeskanuj QR w aplikacji mObywatel lub kliknij przycisk, aby
                   podpisać.
                 </p>
-                <Button onClick={sign} disabled={signing}>
+                <Button
+                  onClick={sign}
+                  disabled={signing}
+                  className="w-full sm:w-auto"
+                >
                   <QrCode className="h-4 w-4" />
                   {signing ? "Podpisywanie…" : "Podpisz mObywatelem"}
                 </Button>

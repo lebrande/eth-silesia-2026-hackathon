@@ -146,7 +146,11 @@ export function WidgetBuilderWorkspace(props: WorkspaceProps) {
       </div>
       <div className="space-y-4">
         <div className="h-[calc(100dvh-14rem)] min-h-[560px] overflow-y-auto scrollbar-thin rounded-xl border border-border bg-muted/30 p-4">
-          <PreviewPanel spec={currentSpec} scenarioPreview={scenarioPreview} />
+          <PreviewPanel
+            spec={currentSpec}
+            scenarioPreview={scenarioPreview}
+            builtinId={isEdit ? props.id : null}
+          />
         </div>
       </div>
       <div className="lg:col-span-2">

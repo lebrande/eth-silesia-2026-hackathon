@@ -14,7 +14,6 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed-user": "tsx scripts/seed-user.ts",
     "db:seed-faq": "tsx scripts/seed-faq.ts",
-    "db:ensure-tables": "tsx scripts/ensure-tables.ts",
     "embed-faqs": "tsx scripts/embed-faqs.ts",
     "test:chat": "tsx scripts/test-chat.ts",
     "test:batch": "tsx scripts/test-batch.ts",

@@ -3,21 +3,28 @@
 import { Bot } from "lucide-react";
 import type { WidgetSpec } from "@/lib/widget-builder/schema";
 import { WidgetRenderer } from "./widget-renderer";
+import {
+  BuiltinWidgetPreview,
+  isBuiltinWidgetId,
+} from "./builtin-preview.client";
 
 export function PreviewPanel({
   spec,
   scenarioPreview,
+  builtinId,
 }: {
   spec: WidgetSpec | null;
   scenarioPreview: string;
+  builtinId?: string | null;
 }) {
+  const useBuiltin = builtinId ? isBuiltinWidgetId(builtinId) : false;
   return (
     <div className="flex h-full flex-col items-center justify-start">
-      <div className="mx-auto w-full max-w-[380px]">
+      <div className="mx-auto w-full max-w-[560px]">
         <div className="relative overflow-hidden rounded-[2.5rem] border-[10px] border-slate-900 bg-slate-100 shadow-2xl">
-          <div className="absolute top-0 left-1/2 z-10 h-5 w-32 -translate-x-1/2 rounded-b-2xl bg-slate-900" />
+          <div className="absolute top-0 left-1/2 z-10 h-5 w-40 -translate-x-1/2 rounded-b-2xl bg-slate-900" />
 
-          <div className="flex h-[660px] flex-col bg-white">
+          <div className="flex h-[780px] flex-col bg-white">
             <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 pb-3 pt-8">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-white">
                 <Bot className="h-4 w-4" strokeWidth={2.25} />
@@ -41,7 +48,15 @@ export function PreviewPanel({
 
               <div className="flex min-w-0">
                 <div className="min-w-0 max-w-[88%] rounded-2xl rounded-bl-sm border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm">
-                  {spec ? (
+                  {useBuiltin && builtinId ? (
+                    <BuiltinWidgetPreview
+                      id={
+                        builtinId as Parameters<
+                          typeof BuiltinWidgetPreview
+                        >[0]["id"]
+                      }
+                    />
+                  ) : spec ? (
                     <WidgetRenderer spec={spec} />
                   ) : (
                     <div className="py-6 text-center text-xs text-slate-400">
