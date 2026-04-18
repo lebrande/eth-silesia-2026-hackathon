@@ -1,3 +1,9 @@
+/**
+ * Duplikat schematu Drizzle z apps/main/src/db/schema.ts.
+ * Jedno źródło prawdy dla DDL jest w apps/main (tam też trzymamy migracje
+ * drizzle-kit). Tu mamy 1:1 definicje tabel, żeby backoffice-ai miał własny
+ * moduł drizzle-orm bez cross-importów między workspace'ami.
+ */
 import {
   pgTable,
   text,
@@ -7,10 +13,6 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 
-// ============================================================
-// Auth
-// ============================================================
-
 export const users = pgTable("users", {
   id: text("id")
     .primaryKey()
@@ -19,10 +21,6 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash"),
 });
-
-// ============================================================
-// Chat
-// ============================================================
 
 export const chatUsers = pgTable("chat_users", {
   uid: text("uid").primaryKey(),
@@ -50,10 +48,6 @@ export const chatSessions = pgTable("chat_sessions", {
   language: text("language"),
 });
 
-// ============================================================
-// Backoffice: FAQ knowledge base
-// ============================================================
-
 export const faqEntries = pgTable("faq_entries", {
   id: text("id")
     .primaryKey()
@@ -74,10 +68,6 @@ export const faqEntries = pgTable("faq_entries", {
     .notNull()
     .defaultNow(),
 });
-
-// ============================================================
-// Backoffice: agent flags on AI messages
-// ============================================================
 
 export const messageFlags = pgTable(
   "message_flags",
