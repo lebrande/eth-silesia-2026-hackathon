@@ -3,28 +3,23 @@ import type { StructuredToolInterface } from "@langchain/core/tools";
 import { createFaqTools, type BackofficeAgentContext } from "./faq.tool";
 import { createConversationTools } from "./conversations.tool";
 import { createMetricsTools } from "./metrics.tool";
-import {
-  buildDynamicCustomTools,
-  createCustomToolMetaTools,
-} from "./custom.tool";
 
 export type { BackofficeAgentContext };
 
 /**
  * Zwraca wszystkie tools dostępne dla backoffice-agenta:
- * - built-in (FAQ, rozmowy, metryki, flagi)
- * - meta-tools do zarządzania rejestrem custom tools
- * - aktywne custom tools z bazy (zbudowane dynamicznie z rekordów)
+ * built-in (FAQ, rozmowy, metryki, flagi).
+ *
+ * Stary moduł custom_tools został zastąpiony builderem widgetów
+ * (/app/tools/new) — widgety nie są narzędziami agenta backoffice,
+ * tylko definicjami zapisywanymi do DB i używanymi przez agenta klienta.
  */
-export async function createBackofficeTools(
+export function createBackofficeTools(
   ctx: BackofficeAgentContext,
-): Promise<StructuredToolInterface[]> {
-  const [dynamic] = await Promise.all([buildDynamicCustomTools()]);
+): StructuredToolInterface[] {
   return [
     ...createFaqTools(ctx),
     ...createConversationTools(ctx),
     ...createMetricsTools(ctx),
-    ...createCustomToolMetaTools(ctx),
-    ...dynamic,
   ] as StructuredToolInterface[];
 }

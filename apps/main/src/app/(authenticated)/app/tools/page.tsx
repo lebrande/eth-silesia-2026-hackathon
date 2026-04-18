@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/page-header";
-import { listCustomTools } from "@/lib/server/custom-tools.server";
+import { listWidgetDefinitions } from "@/lib/server/widget-definitions.server";
 import {
   Card,
   CardContent,
@@ -9,27 +9,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/separator";
 import { formatRelative } from "@/lib/utils";
-import { ArrowRight, Plus, Wrench } from "lucide-react";
+import { ArrowRight, LayoutDashboard, Plus } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function ToolsListPage() {
-  const tools = await listCustomTools();
-  const active = tools.filter((t) => t.enabled).length;
+  const widgets = await listWidgetDefinitions();
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Custom tools"
-        description="Twórz własne funkcje (np. wyliczanie kosztu zużycia prądu), których będzie używał agent asystenta. Formuły wykonują się przez mathjs, parametry są walidowane per wywołanie."
+        title="Widgety agenta"
+        description="Kompozycje wizualne, które agent klienta może pokazać w chacie na tauron.pl. Opisujesz scenariusz w chatze z buildem, a widget generuje się automatycznie."
         actions={
           <Button asChild>
             <Link href="/app/tools/new">
               <Plus className="h-4 w-4" />
-              Nowe narzędzie
+              Nowy widget
             </Link>
           </Button>
         }
@@ -39,35 +37,15 @@ export default async function ToolsListPage() {
         <Card>
           <CardContent className="p-5 flex items-center gap-4">
             <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <Wrench className="h-4.5 w-4.5" />
+              <LayoutDashboard className="h-4.5 w-4.5" />
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                 Wszystkich
               </div>
               <div className="text-2xl font-semibold tabular-nums mt-0.5">
-                {tools.length}
+                {widgets.length}
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-5">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-              Aktywne
-            </div>
-            <div className="text-2xl font-semibold tabular-nums mt-0.5">
-              {active}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-5">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-              Wyłączone
-            </div>
-            <div className="text-2xl font-semibold tabular-nums mt-0.5">
-              {tools.length - active}
             </div>
           </CardContent>
         </Card>
@@ -75,24 +53,24 @@ export default async function ToolsListPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Lista narzędzi</CardTitle>
+          <CardTitle>Lista widgetów</CardTitle>
           <CardDescription>
-            Agent widzi tylko aktywne narzędzia i może je wywoływać w każdej
-            rozmowie na stronie Asystent AI.
+            Każdy widget to zapisana definicja (kompozycja klocków), którą
+            agent klienta może wyrenderować w odpowiedzi.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          {tools.length === 0 ? (
+          {widgets.length === 0 ? (
             <div className="p-6">
               <EmptyState
-                title="Brak custom tools"
-                description="Zdefiniuj pierwszą własną funkcję — np. wyliczanie miesięcznego kosztu prądu (kwh * tariff + fixed_fee)."
-                icon={<Wrench className="h-8 w-8" />}
+                title="Brak widgetów"
+                description="Stwórz pierwszy widget — opisz scenariusz klienta, a builder wygeneruje gotową kompozycję (wykres, tabela, przyciski…)."
+                icon={<LayoutDashboard className="h-8 w-8" />}
                 action={
                   <Button asChild>
                     <Link href="/app/tools/new">
                       <Plus className="h-4 w-4" />
-                      Nowe narzędzie
+                      Nowy widget
                     </Link>
                   </Button>
                 }
@@ -100,35 +78,27 @@ export default async function ToolsListPage() {
             </div>
           ) : (
             <ul className="divide-y divide-border">
-              {tools.map((t) => (
-                <li key={t.id}>
+              {widgets.map((w) => (
+                <li key={w.id}>
                   <Link
-                    href={`/app/tools/${t.id}`}
+                    href={`/app/tools/${w.id}`}
                     className="group flex items-start gap-4 px-4 py-4 hover:bg-muted/40 transition-colors"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <code className="font-mono text-sm font-semibold">
-                          {t.name}
-                        </code>
-                        {t.enabled ? (
-                          <Badge variant="success">aktywne</Badge>
-                        ) : (
-                          <Badge variant="muted">wyłączone</Badge>
-                        )}
+                        <span className="text-sm font-semibold">{w.name}</span>
                         <span className="text-[11px] text-muted-foreground">
-                          zaktualizowane {formatRelative(t.updatedAt)}
+                          zaktualizowany {formatRelative(w.updatedAt)}
                         </span>
                       </div>
                       <p className="text-sm text-foreground/85 line-clamp-2">
-                        {t.description}
+                        {w.description}
                       </p>
-                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
-                        <span className="font-mono">
-                          ({t.parameters.map((p) => `${p.name}:${p.type}`).join(", ") || "no params"})
-                        </span>
-                        <code className="font-mono">= {t.formula}</code>
-                      </div>
+                      {w.createdByUserEmail ? (
+                        <div className="mt-2 text-[11px] text-muted-foreground">
+                          autor: {w.createdByUserEmail}
+                        </div>
+                      ) : null}
                     </div>
                     <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform" />
                   </Link>

@@ -1,19 +1,13 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { CustomToolForm } from "@/components/custom-tools/tool-form";
+import { WidgetBuilderWorkspace } from "@/components/widget-builder/workspace";
 
 export const dynamic = "force-dynamic";
 
-export default function NewCustomToolPage() {
+export default function NewWidgetPage() {
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-4">
       <div>
         <Link
           href="/app/tools"
@@ -23,51 +17,12 @@ export default function NewCustomToolPage() {
           Wróć do listy
         </Link>
         <PageHeader
-          title="Nowy custom tool"
-          description="Zdefiniuj parametry i formułę. Przykład: parametry kwh i tariff, formuła kwh * tariff + 15. Agent zobaczy to narzędzie i będzie mógł je wywołać, gdy operator go o to poprosi."
+          title="Nowy widget"
+          description="Opisz scenariusz klienta w chatze z lewej strony. Widget pojawia się natychmiast w podglądzie telefonu po prawej — tak go zobaczy klient na tauron.pl."
         />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Definicja</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CustomToolForm
-            mode="create"
-            initial={{
-              name: "",
-              description: "",
-              parameters: [
-                {
-                  name: "kwh",
-                  type: "number",
-                  description: "Zużycie energii w kWh",
-                  required: true,
-                },
-                {
-                  name: "tariff",
-                  type: "number",
-                  description: "Stawka taryfy w zł/kWh",
-                  required: true,
-                  default: 0.85,
-                },
-                {
-                  name: "fixed_fee",
-                  type: "number",
-                  description: "Opłata stała w zł",
-                  required: false,
-                  default: 12,
-                },
-              ],
-              formula: "kwh * tariff + fixed_fee",
-              responseTemplate:
-                "Miesięczny koszt: {{kwh}} kWh × {{tariff}} zł/kWh + {{fixed_fee}} zł = {{result}} zł",
-              enabled: true,
-            }}
-          />
-        </CardContent>
-      </Card>
+      <WidgetBuilderWorkspace mode="create" />
     </div>
   );
 }

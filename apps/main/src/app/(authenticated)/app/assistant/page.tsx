@@ -1,41 +1,25 @@
+import { ChevronDown } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { AssistantChatPanel } from "@/components/assistant/chat-panel";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
 export default function AssistantPage() {
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Asystent AI"
-        description={
-          <>
-            Rozmawiaj z agentem, który ma dostęp do FAQ, rozmów klientów i
-            metryk. Pomaga dopisywać brakujące FAQ, znajduje wątki po
-            filtrach i potrafi flagować problematyczne odpowiedzi AI.
-          </>
-        }
-      />
+    <div className="flex flex-col gap-4">
+      <PageHeader title="Asystent AI" />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
-        <AssistantChatPanel initialThreadId={null} />
-
-        <Card className="h-fit">
-          <CardHeader>
-            <CardTitle className="text-base">Co potrafi agent?</CardTitle>
-            <CardDescription>
-              Agent jest podpięty do tej samej bazy co reszta backoffice.
-              Wszystkie akcje zapisują się natychmiast w Postgresie.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
+      <details className="group rounded-lg border border-border bg-card">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium hover:bg-muted/40">
+          <span>Co potrafi agent?</span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="space-y-3 border-t border-border px-4 py-3 text-sm">
+          <p className="text-xs text-muted-foreground">
+            Agent jest podpięty do tej samej bazy co reszta backoffice.
+            Wszystkie akcje zapisują się natychmiast w Postgresie.
+          </p>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <Section
               title="FAQ"
               items={[
@@ -59,13 +43,15 @@ export default function AssistantPage() {
                 "get_problematic_questions — ranking braków w FAQ",
               ]}
             />
-            <div className="rounded-md border border-dashed border-border bg-muted/30 p-3 text-xs text-muted-foreground">
-              Agent zawsze prosi o potwierdzenie przed zapisem w FAQ i
-              sprawdza czy nie tworzy duplikatu.
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+          <div className="rounded-md border border-dashed border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+            Agent zawsze prosi o potwierdzenie przed zapisem w FAQ i sprawdza
+            czy nie tworzy duplikatu.
+          </div>
+        </div>
+      </details>
+
+      <AssistantChatPanel initialThreadId={null} />
     </div>
   );
 }

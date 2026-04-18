@@ -20,7 +20,7 @@ const items = [
   { href: "/app/conversations", label: "Rozmowy", icon: MessagesSquare },
   { href: "/app/problems", label: "Problematyczne pytania", icon: AlertCircle },
   { href: "/app/faq", label: "Baza wiedzy (FAQ)", icon: BookOpen },
-  { href: "/app/tools", label: "Custom tools", icon: Wrench },
+  { href: "/app/tools", label: "Widgety agenta", icon: Wrench },
 ];
 
 export function Sidebar() {

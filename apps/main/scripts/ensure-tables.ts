@@ -1,6 +1,9 @@
 /**
  * Tworzy tabele backoffice, których nie ma jeszcze w oficjalnych
- * migracjach drizzle-kit (aktualnie: custom_tools).
+ * migracjach drizzle-kit (aktualnie: widget_definitions).
+ *
+ * Usuwa także dawne tabele custom_tools / custom_tool_runs — moduł
+ * custom_tools został zastąpiony builderem widgetów.
  *
  * Użycie:
  *   pnpm -F main db:ensure-tables
@@ -31,22 +34,28 @@ async function main() {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(pool, { schema: schemaMod });
 
+  await db.execute(sql`DROP TABLE IF EXISTS "custom_tool_runs"`);
+  await db.execute(sql`DROP TABLE IF EXISTS "custom_tools"`);
+
   await db.execute(sql`
-    CREATE TABLE IF NOT EXISTS "custom_tools" (
+    CREATE TABLE IF NOT EXISTS "widget_definitions" (
       "id" text PRIMARY KEY NOT NULL,
-      "name" text NOT NULL UNIQUE,
+      "name" text NOT NULL,
       "description" text NOT NULL,
-      "parameters" jsonb DEFAULT '[]'::jsonb NOT NULL,
-      "formula" text NOT NULL,
-      "response_template" text,
-      "enabled" boolean DEFAULT true NOT NULL,
+      "scenario" text NOT NULL,
+      "spec" jsonb NOT NULL,
       "created_by_user_id" text REFERENCES "users"("id") ON DELETE SET NULL,
       "created_at" timestamp with time zone DEFAULT now() NOT NULL,
       "updated_at" timestamp with time zone DEFAULT now() NOT NULL
     )
   `);
 
-  console.log("✓ Tabele backoffice gotowe (custom_tools).");
+  await db.execute(sql`
+    CREATE INDEX IF NOT EXISTS "widget_definitions_updated_at_idx"
+    ON "widget_definitions" ("updated_at" DESC)
+  `);
+
+  console.log("✓ Tabele backoffice gotowe (widget_definitions).");
   await pool.end();
   process.exit(0);
 }
