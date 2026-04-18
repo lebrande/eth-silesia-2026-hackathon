@@ -62,13 +62,6 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="p-3 border-t border-border">
-        <div className="rounded-lg bg-muted/60 p-3 text-[11px] text-muted-foreground leading-snug">
-          <div className="font-medium text-foreground/80 mb-0.5">Live data</div>
-          Dane pobierane wprost z czatowego Postgresa (LangGraph checkpoints +
-          chat_sessions + FAQ).
-        </div>
-      </div>
     </aside>
   );
 }

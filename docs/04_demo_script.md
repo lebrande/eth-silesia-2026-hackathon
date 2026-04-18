@@ -5,7 +5,7 @@
 
 **Persona:** Anna Kowalska, klientka Tauron na taryfie G11, bez fotowoltaiki, mieszka w domu jednorodzinnym. W październiku 2025 rachunek skoczył — zaczęła grzać pompą ciepła i jeszcze tego nie odczuła w fakturach bo mrożenie cen działało do końca roku. Od stycznia 2026 mrożenie zniesione → szok.
 
----
+---s
 
 ## Część 1 — pytanie ogólne (bez autoryzacji)
 
@@ -27,11 +27,11 @@
 
 > **Asystent:** Wysłałem kod SMS na numer \*\*\*456. Wpisz 6-cyfrowy kod.
 >
-> *[renderuje SmsAuthChallenge]*
+> _[renderuje SmsAuthChallenge]_
 
 > **Anna:** 000000
 
-> **Asystent:** *[renderuje widget `ConsumptionTimeline` — 36 miesięcy, anomalia w październiku 2025 podświetlona]*
+> **Asystent:** _[renderuje widget `ConsumptionTimeline` — 36 miesięcy, anomalia w październiku 2025 podświetlona]_
 >
 > Spójrz na wykres — do września 2025 Twoje miesięczne zużycie mieściło się w ~350 kWh. Od października skoczyło do ~620 kWh i utrzymuje się. Największy przyrost widać w godzinach 17–22. Do stycznia 2026 faktury tego nie pokazywały bo obowiązywało mrożenie cen — od tego miesiąca płacisz pełną stawkę, stąd szok.
 >
@@ -47,7 +47,7 @@
 
 > **Asystent:** Aha, pompa ciepła wszystko wyjaśnia — to sprzęt, który najbardziej zyskuje na taryfie wielostrefowej. Zobacz obok porównanie dla Twojego profilu:
 >
-> *[renderuje widget `TariffComparator` — 3 kolumny: G11 (obecna), G12, G13 z roczną prognozą kosztu, procentowymi różnicami vs G11 i oznaczoną G13 jako recommended]*
+> _[renderuje widget `TariffComparator` — 3 kolumny: G11 (obecna), G12, G13 z roczną prognozą kosztu, procentowymi różnicami vs G11 i oznaczoną G13 jako recommended]_
 >
 > G13 daje ~30% oszczędności rocznie (~1 400 zł), ale wymaga zaprogramowania pompy pod 3 strefy. G12 to prostszy kompromis — ~19% mniej. Którą opcję wybierasz?
 
@@ -59,15 +59,15 @@
 
 > **Anna:** Dobra, przechodzę na G13.
 
-> **Asystent:** *[renderuje widget `ContractSigning` — sekcje treści umowy do przeczytania w widgecie (strony, warunki, taryfa G13, data wejścia, dane klienta) + przycisk „Akceptuję warunki"]*
+> **Asystent:** _[renderuje widget `ContractSigning` — sekcje treści umowy do przeczytania w widgecie (strony, warunki, taryfa G13, data wejścia, dane klienta) + przycisk „Akceptuję warunki"]_
 >
 > Przygotowałem draft. Przeczytaj i jeśli się zgadzasz, zaakceptuj — wtedy zaproponuję podpis przez mObywatela.
 
-> **Anna:** *[czyta w widgecie → klik „Akceptuję warunki"]*
+> **Anna:** _[czyta w widgecie → klik „Akceptuję warunki"]_
 
-> **Widget:** *[przełącza się w stan „podpisz mObywatelem" — przycisk + QR code w tym samym widgecie]*
+> **Widget:** _[przełącza się w stan „podpisz mObywatelem" — przycisk + QR code w tym samym widgecie]_
 
-> **Anna:** *[klika „Podpisz mObywatelem" → frontend symuluje push → akceptacja]*
+> **Anna:** _[klika „Podpisz mObywatelem" → frontend symuluje push → akceptacja]_
 
 > **Asystent:** Umowa podpisana. Od 01.05.2026 jesteś na taryfie G13 — pierwsze efekty zobaczysz na fakturze za maj. Mogę Ci jeszcze w czymś pomóc?
 
@@ -79,18 +79,18 @@
 
 ## Mapa turów → toole → widgety
 
-| Tura | Trigger użytkownika | Ścieżka grafu | Tool | Widget |
-| --- | --- | --- | --- | --- |
-| 1 | Pytanie o G11 vs G12 | `gate → default_agent` | — | — |
-| 2 | Pytanie o własne rachunki | `default_agent → request_phone → verify_phone → verify_code → verified_agent` | `getConsumptionTimeline` | `SmsAuthChallenge`, `ConsumptionTimeline` |
-| 3 | Opisanie sprzętów | `gate → verified_agent` | `compareTariffs` | `TariffComparator` |
-| 4 | "Przechodzę na G13" | `gate → verified_agent` | `prepareContractDraft` | `ContractSigning` (read → accept → sign) |
+| Tura | Trigger użytkownika       | Ścieżka grafu                                                                 | Tool                     | Widget                                    |
+| ---- | ------------------------- | ----------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
+| 1    | Pytanie o G11 vs G12      | `gate → default_agent`                                                        | —                        | —                                         |
+| 2    | Pytanie o własne rachunki | `default_agent → request_phone → verify_phone → verify_code → verified_agent` | `getConsumptionTimeline` | `SmsAuthChallenge`, `ConsumptionTimeline` |
+| 3    | Opisanie sprzętów         | `gate → verified_agent`                                                       | `compareTariffs`         | `TariffComparator`                        |
+| 4    | "Przechodzę na G13"       | `gate → verified_agent`                                                       | `prepareContractDraft`   | `ContractSigning` (read → accept → sign)  |
 
 ---
 
 ## Notatki reżyserskie dla prowadzącego demo
 
-- **Tura 1 istnieje po to**, żeby pokazać że asystent nie wymaga logowania na każde pytanie — SMS challenge pojawia się *w środku* rozmowy, dokładnie gdy wchodzimy w dane osobowe. To wprost sygnalizuje security-by-design (cross-sponsor AKMF).
+- **Tura 1 istnieje po to**, żeby pokazać że asystent nie wymaga logowania na każde pytanie — SMS challenge pojawia się _w środku_ rozmowy, dokładnie gdy wchodzimy w dane osobowe. To wprost sygnalizuje security-by-design (cross-sponsor AKMF).
 - **Anomalię podświetloną w `ConsumptionTimeline`** warto kliknąć w czasie demo — otworzyłaby tooltip "październik 2025: +78% vs średnia", co wzmacnia narrację "AI operuje na twoich danych".
 - **`TariffComparator` jest interaktywny** — jury powinno móc kliknąć G12 i zobaczyć alternatywny koszt, nie tylko rekomendowaną G13.
 - **Podpis mObywatelem = czysty mock**: klik → spinner 1–2 sek → "podpisano". Nie próbujemy pokazywać realnej integracji — hook narracyjny wystarczy.

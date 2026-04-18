@@ -20,7 +20,7 @@ function formatRow(row: {
   language: string | null;
 }): string {
   const flags: string[] = [];
-  if (row.escalated) flags.push("eskalowana");
+  if (row.escalated) flags.push("przekazana do operatora");
   if (row.blocked) flags.push("zablokowana");
   if (row.verifiedPhone) flags.push("zweryfikowany-SMS");
   const flagsStr = flags.length ? `[${flags.join(", ")}]` : "";
@@ -42,7 +42,7 @@ export function createConversationTools(ctx: BackofficeAgentContext) {
     {
       name: "list_recent_conversations",
       description:
-        "Zwróć listę ostatnich rozmów klientów (tabela chat_sessions). Wspiera filtrowanie po eskalowanych, oflagowanych i wyszukiwanie po thread_id / uid / telefonie / języku.",
+        "Zwróć listę ostatnich rozmów klientów (tabela chat_sessions). Wspiera filtrowanie po rozmowach przekazanych do operatora, oflagowanych i wyszukiwanie po thread_id / uid / telefonie / języku.",
       schema: z.object({
         limit: z.number().int().min(1).max(100).optional(),
         escalatedOnly: z.boolean().optional(),

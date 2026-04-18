@@ -39,7 +39,7 @@ const SEED_FAQS: Array<{
     question: "Czy mogę zmienić adres dostawy po złożeniu zamówienia?",
     answer:
       "Tak, o ile zamówienie nie zostało jeszcze wydane do kuriera. Napisz na czacie „zmiana adresu” i podaj nowy adres — przekażemy wątek do zespołu operacyjnego, który potwierdzi zmianę e-mailem w ciągu 30 minut.",
-    tags: ["dostawa", "adres", "eskalacja"],
+    tags: ["dostawa", "adres", "operator"],
     category: "Dostawa",
     language: "pl",
   },
@@ -63,7 +63,7 @@ const SEED_FAQS: Array<{
     question: "Czy mogę anulować zamówienie?",
     answer:
       "Tak, jeśli zamówienie nie zostało jeszcze wysłane. Napisz „anuluj zamówienie” na czacie — AI potwierdzi tożsamość, a potem przekaże sprawę do operatora, który wykona anulowanie i zwrot środków w ciągu 24 godzin.",
-    tags: ["zamówienia", "anulowanie", "eskalacja"],
+    tags: ["zamówienia", "anulowanie", "operator"],
     category: "Zamówienia",
     language: "pl",
   },

@@ -6,6 +6,7 @@ import {
   boolean,
   jsonb,
   uniqueIndex,
+  vector,
 } from "drizzle-orm/pg-core";
 import type { WidgetSpec } from "@/lib/widget-builder/schema";
 
@@ -75,6 +76,10 @@ export const faqEntries = pgTable("faq_entries", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
+  // Kolumna zapewniana przez ensureBackofficeTables() / scripts/embed-faqs.ts
+  // (pgvector extension + ALTER TABLE). Nie jest trackowana w migracjach
+  // drizzle-kit — analogicznie do widget_definitions.
+  embedding: vector("embedding", { dimensions: 1536 }),
 });
 
 // ============================================================

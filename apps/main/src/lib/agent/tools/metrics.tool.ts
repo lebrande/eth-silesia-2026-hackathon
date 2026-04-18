@@ -21,7 +21,7 @@ export function createMetricsTools(_ctx: BackofficeAgentContext) {
         .join(", ");
       return [
         `Rozmowy: total=${s.totalConversations}, dziś=${s.conversationsToday}, 7d=${s.conversations7d}, 30d=${s.conversations30d}`,
-        `Eskalacje: 7d=${pct(s.escalationRate7d)}, 30d=${pct(s.escalationRate30d)} (deflection 30d=${pct(s.deflectionRate30d)})`,
+        `Przekazania do operatora: 7d=${pct(s.escalationRate7d)}, 30d=${pct(s.escalationRate30d)} (deflection 30d=${pct(s.deflectionRate30d)})`,
         `Zablokowanych sesji=${s.blockedCount}, zweryfikowanych SMS=${s.verifiedCount}`,
         `Oflagowanych wiadomości=${s.totalFlags}, wpisów FAQ=${s.faqCount}`,
         `Top języki: ${langs || "(brak danych)"}`,
@@ -30,7 +30,7 @@ export function createMetricsTools(_ctx: BackofficeAgentContext) {
     {
       name: "get_dashboard_stats",
       description:
-        "Zwraca snapshot KPI backoffice (30 dni): liczba rozmów, eskalacji, flag, wpisów FAQ, top języków.",
+        "Zwraca snapshot KPI backoffice (30 dni): liczba rozmów, przekazań do operatora, flag, wpisów FAQ, top języków.",
       schema: z.object({}),
     },
   );
@@ -57,7 +57,7 @@ export function createMetricsTools(_ctx: BackofficeAgentContext) {
     {
       name: "get_problematic_questions",
       description:
-        "Lista pytań które sprawiły problem: źródłem są eskalowane rozmowy oraz wiadomości AI oznaczone ręcznie przez operatorów. Pokazuje liczbę wystąpień, powody, próbkę thread_id i czy pytanie ma już wpis FAQ.",
+        "Lista pytań które sprawiły problem: źródłem są rozmowy przekazane do operatora oraz wiadomości AI oznaczone ręcznie przez operatorów. Pokazuje liczbę wystąpień, powody, próbkę thread_id i czy pytanie ma już wpis FAQ.",
       schema: z.object({
         limit: z
           .number()

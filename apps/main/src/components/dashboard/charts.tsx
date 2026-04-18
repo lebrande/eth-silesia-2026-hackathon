@@ -6,14 +6,14 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
+  LabelList,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import type { KpiTimeseriesPoint } from "@/lib/types";
+import type { WidgetKindUsage } from "@/lib/server/metrics.server";
 
 function formatShort(date: string) {
   const d = new Date(date);
@@ -73,49 +73,72 @@ export function ConversationsChart({ data }: { data: KpiTimeseriesPoint[] }) {
   );
 }
 
-export function EscalationRateChart({ data }: { data: KpiTimeseriesPoint[] }) {
-  const scaled = data.map((d) => ({
+const KIND_LABELS: Record<string, string> = {
+  header: "Nagłówek",
+  paragraph: "Paragraf",
+  list: "Lista",
+  keyValue: "Klucz-wartość",
+  badge: "Badge",
+  table: "Tabela",
+  chart: "Wykres",
+  actions: "Przyciski",
+  attachment: "Załącznik",
+  image: "Obrazek",
+  progress: "Pasek postępu",
+  timeline: "Oś czasu",
+  alert: "Alert",
+  formField: "Pole formularza",
+  columns: "Kolumny",
+};
+
+export function WidgetKindsChart({ data }: { data: WidgetKindUsage[] }) {
+  if (data.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground py-10 text-center">
+        Brak zapisanych widgetów — stwórz pierwszy w „Widgety agenta".
+      </p>
+    );
+  }
+  const top = data.slice(0, 8).map((d) => ({
     ...d,
-    escPct: +(d.escalationRate * 100).toFixed(1),
-    deflPct: +((1 - d.escalationRate) * 100).toFixed(1),
+    label: KIND_LABELS[d.kind] ?? d.kind,
   }));
+  const height = Math.max(200, top.length * 34 + 20);
   return (
-    <ResponsiveContainer width="100%" height={240}>
-      <LineChart data={scaled} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-        <CartesianGrid vertical={false} stroke="oklch(0.92 0.01 260)" />
+    <ResponsiveContainer width="100%" height={height}>
+      <BarChart
+        data={top}
+        layout="vertical"
+        margin={{ top: 4, right: 24, left: 0, bottom: 0 }}
+      >
+        <CartesianGrid horizontal={false} stroke="oklch(0.92 0.01 260)" />
         <XAxis
-          dataKey="date"
-          tickFormatter={formatShort}
+          type="number"
           tick={axisStyle}
           axisLine={false}
           tickLine={false}
-          interval="preserveStartEnd"
-          minTickGap={24}
+          allowDecimals={false}
         />
-        <YAxis tick={axisStyle} axisLine={false} tickLine={false} unit="%" domain={[0, 100]} />
+        <YAxis
+          type="category"
+          dataKey="label"
+          tick={axisStyle}
+          axisLine={false}
+          tickLine={false}
+          width={110}
+        />
         <Tooltip
           contentStyle={tooltipStyle}
-          labelFormatter={(v) => formatShort(String(v))}
-          formatter={(v, n) => [
-            `${v}%`,
-            n === "escPct" ? "Escalation rate" : "Deflection",
-          ]}
+          formatter={(v) => [String(v), "Wystąpień"]}
         />
-        <Line
-          type="monotone"
-          dataKey="escPct"
-          stroke="oklch(0.62 0.24 25)"
-          strokeWidth={2}
-          dot={false}
-        />
-        <Line
-          type="monotone"
-          dataKey="deflPct"
-          stroke="oklch(0.72 0.18 150)"
-          strokeWidth={2}
-          dot={false}
-        />
-      </LineChart>
+        <Bar dataKey="count" fill="var(--color-primary)" radius={[0, 4, 4, 0]}>
+          <LabelList
+            dataKey="count"
+            position="right"
+            style={{ fontSize: 11, fill: "oklch(0.4 0.02 260)" }}
+          />
+        </Bar>
+      </BarChart>
     </ResponsiveContainer>
   );
 }

@@ -9,9 +9,9 @@ declare global {
 
 /**
  * Idempotentne utworzenie tabel niepokrytych jeszcze oficjalnymi migracjami
- * drizzle-kit (aktualnie: widget_definitions). Docelowo: `drizzle-kit generate`
- * + commit migracji; do tego czasu tworzymy tabelę lazy przy pierwszym
- * dostępie.
+ * drizzle-kit (aktualnie: widget_definitions + kolumna faq_entries.embedding
+ * z pgvectora). Docelowo: `drizzle-kit generate` + commit migracji; do tego
+ * czasu tworzymy obiekty lazy przy pierwszym dostępie.
  *
  * Stary moduł custom_tools został zastąpiony builderem widgetów — sprzątamy
  * jego tabele (idempotentnie, no-op po pierwszym uruchomieniu).
@@ -19,6 +19,17 @@ declare global {
 export function ensureBackofficeTables(): Promise<void> {
   if (!globalThis.__backofficeEnsuredTables) {
     globalThis.__backofficeEnsuredTables = (async () => {
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
+      await db.execute(sql`
+        ALTER TABLE "faq_entries"
+          ADD COLUMN IF NOT EXISTS "embedding" vector(1536)
+      `);
+      await db.execute(sql`
+        CREATE INDEX IF NOT EXISTS "faq_entries_embedding_idx"
+          ON "faq_entries" USING ivfflat ("embedding" vector_cosine_ops)
+          WITH (lists = 100)
+      `);
+
       await db.execute(sql`DROP TABLE IF EXISTS "custom_tool_runs"`);
       await db.execute(sql`DROP TABLE IF EXISTS "custom_tools"`);
       await db.execute(sql`

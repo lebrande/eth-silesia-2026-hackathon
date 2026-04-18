@@ -49,7 +49,7 @@ export default function Home() {
                 body="Zgłoś awarię, sprawdź status wniosku lub zadaj pytanie o warunki umowy — 24/7."
               />
               <Feature
-                title="Eskalacja do konsultanta"
+                title="Przekazanie do konsultanta"
                 body="Gdy sprawa wymaga człowieka, asystent weryfikuje numer telefonu i przekazuje zgłoszenie dalej."
               />
             </div>
