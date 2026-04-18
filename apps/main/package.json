@@ -13,8 +13,11 @@
     "db:create-migration": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed-user": "tsx scripts/seed-user.ts",
+    "db:seed-faq": "tsx scripts/seed-faq.ts",
+    "db:ensure-tables": "tsx scripts/ensure-tables.ts",
     "test:chat": "tsx scripts/test-chat.ts",
-    "test:batch": "tsx scripts/test-batch.ts"
+    "test:batch": "tsx scripts/test-batch.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@langchain/core": "^1.1.30",
@@ -23,14 +26,20 @@
     "@langchain/openai": "^1.2.12",
     "@tailwindcss/postcss": "^4.1.18",
     "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "langchain": "^1.2.29",
+    "lucide-react": "^1.8.0",
+    "mathjs": "^15.2.0",
     "next": "16.1.4",
     "next-auth": "5.0.0-beta.30",
     "pg": "^8.20.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "recharts": "^3.8.1",
+    "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.1.18",
     "zod": "^4.3.5"
   },

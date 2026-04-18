@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { fetchConversationHistoryAction } from "@/lib/actions/chat.action";
+import { ReadAloudButton } from "@/components/ReadAloudButton.client";
 
 type Session = {
   threadId: string;
@@ -157,9 +158,12 @@ function SessionRow({
                         : "bg-white text-gray-800 border border-gray-200"
                     }`}
                   >
-                    <span className="text-xs font-medium text-gray-400 block mb-0.5">
-                      {m.role === "user" ? "User" : "Bot"}
-                    </span>
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-xs font-medium text-gray-400">
+                        {m.role === "user" ? "User" : "Bot"}
+                      </span>
+                      <ReadAloudButton text={m.content} />
+                    </div>
                     {m.content}
                   </div>
                 ))}

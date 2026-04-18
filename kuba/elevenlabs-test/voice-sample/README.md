@@ -2,7 +2,7 @@
 
 > **Status**: not used in the final feasibility test. The Mazovian Polish stock voice (`hIssydxXZ1WuDorjx6Ic`) produced acceptable output on its own; cloning was judged unnecessary. This directory is kept as scaffolding in case anyone later wants to pursue Instant Voice Cloning (IVC) of a native Silesian YouTube speaker to produce a more authentic Silesian accent.
 >
-> See [`../../thoughts/notes/elevenlabs-silesian-feasibility.md`](../../thoughts/notes/elevenlabs-silesian-feasibility.md) for the rationale.
+> See [`../../../thoughts/notes/elevenlabs-silesian-feasibility.md`](../../../thoughts/notes/elevenlabs-silesian-feasibility.md) for the rationale.
 
 ---
 

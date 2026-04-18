@@ -1,5 +1,19 @@
 # ElevenLabs po Śląsku — Silesian TTS Feasibility Implementation Plan
 
+> **STATUS (2026-04-18): COMPLETE.** See [`../notes/elevenlabs-silesian-feasibility.md`](../notes/elevenlabs-silesian-feasibility.md) for the verdict.
+>
+> **Outcome per phase**:
+> - **Phase 1** (corpus) — done. [`../notes/silesian-examples.md`](../notes/silesian-examples.md)
+> - **Phase 2** (PLS dictionary) — done but **rejected by perceptual test**. Aliases degrade output. Files retained at `kuba/elevenlabs-test/silesian.pls` and `upload-dict.mjs` for reference only.
+> - **Phase 3** (Node harness) — done. `kuba/elevenlabs-test/` runs successfully; dict variants removed after the perceptual test.
+> - **Phase 4** (Web UI protocol) — **superseded**. The Node harness A/B produced enough signal to reach a verdict without the Web UI walkthrough.
+> - **Phase 5** (voice cloning) — **skipped by user decision**. The Mazovian Polish stock voice (`hIssydxXZ1WuDorjx6Ic`) produced acceptable output without cloning. Scaffolding retained at `kuba/elevenlabs-test/voice-sample/README.md` for future work.
+> - **Phase 6** (feasibility report) — done. Verdict: **Possible with workaround.** Winning stack: Flash v2.5 + `language_code: "pl"` + Mazovian voice, no dictionary.
+>
+> **Path note**: during execution, `kuba/thoughts/` was moved to `thoughts/` at the repo root. References below of the form `kuba/thoughts/...` should be read as `thoughts/...`. The Node harness stayed at `kuba/elevenlabs-test/`.
+
+---
+
 ## Overview
 
 Investigate whether ElevenLabs can synthesise the Silesian language (Ślōnskŏ gŏdka) and deliver a judged feasibility report. The investigation is backed by reproducible artifacts: a 12-sentence Silesian test corpus, a W3C Pronunciation Lexicon (`.pls`) file, a Node.js harness that hits the ElevenLabs API, a manual Web UI protocol the user runs themselves, and a cloned voice (IVC) of a native Silesian YouTube speaker. The final verdict lives in a separate notes document; this plan lists the phases that produce it.
@@ -803,12 +817,13 @@ Not applicable — greenfield.
 
 ## References
 
-- Original ticket: `kuba/thoughts/tickets/fsn_0001-silesian-lang.md`
-- Example sentences (to be produced): `kuba/thoughts/notes/silesian-examples.md`
-- Feasibility report (to be produced): `kuba/thoughts/notes/elevenlabs-silesian-feasibility.md`
-- Test harness (to be produced): `kuba/elevenlabs-test/`
+- Original ticket: [`../tickets/fsn_0001-silesian-lang.md`](../tickets/fsn_0001-silesian-lang.md)
+- Example sentences: [`../notes/silesian-examples.md`](../notes/silesian-examples.md)
+- Feasibility report (verdict): [`../notes/elevenlabs-silesian-feasibility.md`](../notes/elevenlabs-silesian-feasibility.md)
+- Test harness: `kuba/elevenlabs-test/`
+- Voice-sample scaffolding (unused): `kuba/elevenlabs-test/voice-sample/README.md`
 - ElevenLabs Models: https://elevenlabs.io/docs/overview/models
-- ElevenLabs Pronunciation Dictionaries: https://elevenlabs.io/docs/eleven-api/guides/cookbooks/text-to-speech/pronunciation-dictionaries
+- ElevenLabs Pronunciation Dictionaries: https://elevenlabs.io/docs/cookbooks/text-to-speech/pronunciation-dictionaries
 - ElevenLabs TTS endpoint: https://elevenlabs.io/docs/api-reference/text-to-speech/convert
 - Help Center — supported languages: https://help.elevenlabs.io/hc/en-us/articles/13313366263441-What-languages-do-you-support
 - Silesian orthography: https://en.wikipedia.org/wiki/Silesian_orthography

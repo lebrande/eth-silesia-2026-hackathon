@@ -4,8 +4,18 @@ import {
   timestamp,
   integer,
   boolean,
+  jsonb,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export type CustomToolParam = {
+  name: string;
+  type: "number" | "string";
+  description?: string;
+  required?: boolean;
+  default?: number | string | null;
+};
 
 // ============================================================
 // Auth
@@ -105,3 +115,31 @@ export const messageFlags = pgTable(
     ),
   }),
 );
+
+// ============================================================
+// Backoffice: custom tools (formulas editable by operators)
+// ============================================================
+
+export const customTools = pgTable("custom_tools", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull().unique(),
+  description: text("description").notNull(),
+  parameters: jsonb("parameters")
+    .$type<CustomToolParam[]>()
+    .notNull()
+    .default(sql`'[]'::jsonb`),
+  formula: text("formula").notNull(),
+  responseTemplate: text("response_template"),
+  enabled: boolean("enabled").notNull().default(true),
+  createdByUserId: text("created_by_user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});

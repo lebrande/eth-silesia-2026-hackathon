@@ -6,7 +6,7 @@ export default async function LoginPage(props: {
   searchParams: Promise<{ error?: string }>;
 }) {
   const session = await auth();
-  if (session?.user) redirect("/app");
+  if (session?.user) redirect("/app/dashboard");
 
   const searchParams = await props.searchParams;
   const error = searchParams.error;
@@ -21,7 +21,7 @@ export default async function LoginPage(props: {
             await signIn("credentials", {
               email: formData.get("email"),
               password: formData.get("password"),
-              redirectTo: "/app",
+              redirectTo: "/app/dashboard",
             });
           } catch (error) {
             if (error instanceof AuthError) {
