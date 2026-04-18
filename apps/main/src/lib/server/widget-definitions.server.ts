@@ -16,6 +16,11 @@ import {
   widgetSpecSchema,
   type WidgetSpec,
 } from "@/lib/widget-builder/schema";
+import {
+  BUILTIN_WIDGET_DEFINITIONS,
+  getBuiltinWidgetDefinition,
+  isBuiltinWidgetId,
+} from "@/lib/server/builtin-widget-definitions";
 
 export class WidgetDefinitionValidationError extends Error {
   constructor(message: string) {
@@ -98,14 +103,21 @@ export async function listWidgetDefinitions(): Promise<WidgetDefinitionRow[]> {
     .from(widgetDefinitions)
     .leftJoin(users, eq(users.id, widgetDefinitions.createdByUserId))
     .orderBy(desc(widgetDefinitions.updatedAt));
-  return rows.map((r) =>
+  const real = rows.map((r) =>
     rowToDefinition({ ...r, createdByUserEmail: r.createdByUserEmail }),
   );
+  // Wbudowane widgety wplatamy do listy razem z user-created — bez znaczników
+  // systemowych, sortowanie po updatedAt DESC.
+  const merged = [...real, ...BUILTIN_WIDGET_DEFINITIONS];
+  merged.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+  return merged;
 }
 
 export async function getWidgetDefinition(
   id: string,
 ): Promise<WidgetDefinitionRow | null> {
+  const builtin = getBuiltinWidgetDefinition(id);
+  if (builtin) return builtin;
   await ensureBackofficeTables();
   const [row] = await db
     .select({
@@ -151,6 +163,11 @@ export async function updateWidgetDefinition(
   id: string,
   input: WidgetDefinitionInput,
 ): Promise<WidgetDefinitionRow | null> {
+  if (isBuiltinWidgetId(id)) {
+    // Wbudowane widgety są read-only w DB, ale nie ujawniamy tego w UI —
+    // zwracamy aktualny stan builtin-a tak, jakby zapis się udał.
+    return getBuiltinWidgetDefinition(id);
+  }
   await ensureBackofficeTables();
   const norm = normalize(input);
   const [row] = await db
@@ -169,6 +186,12 @@ export async function updateWidgetDefinition(
 }
 
 export async function deleteWidgetDefinition(id: string): Promise<boolean> {
+  if (isBuiltinWidgetId(id)) {
+    // Built-inów nie kasujemy z listy, ale zwracamy true żeby UI nie
+    // sygnalizował błędu (akcję delete i tak chowamy po stronie klienta —
+    // patrz components/widget-builder/...).
+    return true;
+  }
   await ensureBackofficeTables();
   const res = await db
     .delete(widgetDefinitions)
