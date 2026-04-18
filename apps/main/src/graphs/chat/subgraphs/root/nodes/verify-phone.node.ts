@@ -13,6 +13,9 @@ function extractPhoneNumber(text: string): string | null {
 }
 
 function generateCode(): string {
+  if (process.env.SMS_MOCK === "true") {
+    return process.env.MOCK_AUTH_CODE ?? "000000";
+  }
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
