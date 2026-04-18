@@ -37,7 +37,7 @@ Example API payload:
 - **Voices tested**:
   - `Adam - Dominant, Firm` (`pNInz6obpgDQGcFmaJgB`) — classic English voice, **empty `verified_languages`**
   - `Adam - Serious, Rich, and Smoky` (`hIssydxXZ1WuDorjx6Ic`) — **Mazovian accent, native Polish**
-- **Delivery**: ElevenLabs API via Node.js harness at [`../../elevenlabs-test/`](../../elevenlabs-test/)
+- **Delivery**: ElevenLabs API via Node.js harness at [`../../kuba/elevenlabs-test/`](../../kuba/elevenlabs-test/)
 
 Raw outputs: `kuba/elevenlabs-test/out/` (current best) and `kuba/elevenlabs-test/out-adam-english/` (English-Adam baseline, kept for A/B).
 
@@ -105,7 +105,7 @@ With Flash v2.5 + `language_code: "pl"` + Mazovian voice, the Silesian diacritic
 
 ## Future work (out of scope)
 
-- **Instant Voice Cloning (IVC)** of a YouTube Silesian speaker — would give an authentic Silesian accent on top of the current stack. Scaffolding is in place at [`../../elevenlabs-test/voice-sample/README.md`](../../elevenlabs-test/voice-sample/README.md).
+- **Instant Voice Cloning (IVC)** of a YouTube Silesian speaker — would give an authentic Silesian accent on top of the current stack. Scaffolding is in place at [`../../kuba/elevenlabs-test/voice-sample/README.md`](../../kuba/elevenlabs-test/voice-sample/README.md).
 - **Professional Voice Cloning (PVC)** with 30+ minutes of consenting native audio — highest quality, longest lead time.
 - **Czech fallback** (`language_code: "cs"`) — untested; Czech preserves some vowel distinctions Polish lost, might handle `ō` better on sentences dominated by that character.
 - **Wider pronunciation dictionary** — the current aliases were too aggressive; a narrower dict that only touches words the base model clearly mispronounces might help, but returns diminish quickly once the voice is right.
@@ -117,9 +117,9 @@ With Flash v2.5 + `language_code: "pl"` + Mazovian voice, the Silesian diacritic
 - Original ticket: [`../tickets/fsn_0001-silesian-lang.md`](../tickets/fsn_0001-silesian-lang.md)
 - Implementation plan: [`../plans/2026-04-17-FSN-0001-silesian-lang.md`](../plans/2026-04-17-FSN-0001-silesian-lang.md)
 - Silesian test corpus: [`./silesian-examples.md`](./silesian-examples.md)
-- Test harness: [`../../elevenlabs-test/`](../../elevenlabs-test/)
-- Current MP3 outputs: [`../../elevenlabs-test/out/`](../../elevenlabs-test/out/)
-- English-Adam baseline (A/B reference): [`../../elevenlabs-test/out-adam-english/`](../../elevenlabs-test/out-adam-english/)
+- Test harness: [`../../kuba/elevenlabs-test/`](../../kuba/elevenlabs-test/)
+- Current MP3 outputs: [`../../kuba/elevenlabs-test/out/`](../../kuba/elevenlabs-test/out/)
+- English-Adam baseline (A/B reference): [`../../kuba/elevenlabs-test/out-adam-english/`](../../kuba/elevenlabs-test/out-adam-english/)
 - ElevenLabs Models: https://elevenlabs.io/docs/overview/models
 - Pronunciation Dictionaries: https://elevenlabs.io/docs/cookbooks/text-to-speech/pronunciation-dictionaries
 - TTS endpoint: https://elevenlabs.io/docs/api-reference/text-to-speech/convert

@@ -8,6 +8,8 @@
 - Sentences 9 and 11 are the strongest "fail" signals — they stack multiple diagnostic characters.
 - Each row lists which characters the sentence specifically stresses, so you can attribute any audible artifact to a concrete grapheme.
 
+> **Test outcome** (see [`./elevenlabs-silesian-feasibility.md`](./elevenlabs-silesian-feasibility.md)): these 12 sentences were fed through ElevenLabs via Flash v2.5 + `language_code: "pl"` + Mazovian stock voice (`hIssydxXZ1WuDorjx6Ic`). All 12 were rendered intelligibly, with a Polish-flavoured Silesian accent. The pronunciation-dictionary path was tested and rejected (aliases degrade output). Audio artifacts at `kuba/elevenlabs-test/out/`.
+
 ## Sentences
 
 | # | Silesian | Polish | English | IPA cue | Diagnostic chars |
