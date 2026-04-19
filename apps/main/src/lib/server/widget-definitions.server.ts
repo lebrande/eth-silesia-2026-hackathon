@@ -10,7 +10,6 @@ import "server-only";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { users, widgetDefinitions } from "@/db/schema";
-import { ensureBackofficeTables } from "@/db/ensure-tables";
 import type { WidgetDefinitionRow } from "@/lib/types";
 import {
   widgetSpecSchema,
@@ -87,7 +86,6 @@ function normalize(input: WidgetDefinitionInput): WidgetDefinitionInput {
 }
 
 export async function listWidgetDefinitions(): Promise<WidgetDefinitionRow[]> {
-  await ensureBackofficeTables();
   const rows = await db
     .select({
       id: widgetDefinitions.id,
@@ -118,7 +116,6 @@ export async function getWidgetDefinition(
 ): Promise<WidgetDefinitionRow | null> {
   const builtin = getBuiltinWidgetDefinition(id);
   if (builtin) return builtin;
-  await ensureBackofficeTables();
   const [row] = await db
     .select({
       id: widgetDefinitions.id,
@@ -144,7 +141,6 @@ export async function createWidgetDefinition(
   createdByUserId: string,
   input: WidgetDefinitionInput,
 ): Promise<WidgetDefinitionRow> {
-  await ensureBackofficeTables();
   const norm = normalize(input);
   const [row] = await db
     .insert(widgetDefinitions)
@@ -168,7 +164,6 @@ export async function updateWidgetDefinition(
     // zwracamy aktualny stan builtin-a tak, jakby zapis się udał.
     return getBuiltinWidgetDefinition(id);
   }
-  await ensureBackofficeTables();
   const norm = normalize(input);
   const [row] = await db
     .update(widgetDefinitions)
@@ -192,7 +187,6 @@ export async function deleteWidgetDefinition(id: string): Promise<boolean> {
     // patrz components/widget-builder/...).
     return true;
   }
-  await ensureBackofficeTables();
   const res = await db
     .delete(widgetDefinitions)
     .where(eq(widgetDefinitions.id, id))

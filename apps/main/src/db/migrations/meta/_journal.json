@@ -36,6 +36,20 @@
       "when": 1776505865282,
       "tag": "0004_add_faq_and_message_flags",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776589221766,
+      "tag": "0005_add_widget_definitions_and_faq_embedding",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1776589753663,
+      "tag": "0006_seed_admin_user",
+      "breakpoints": true
     }
   ]
 }
