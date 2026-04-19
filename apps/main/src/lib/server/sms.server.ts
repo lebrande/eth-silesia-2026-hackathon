@@ -6,6 +6,8 @@ const SMS_OVERRIDE_NUMBER = null;
 // ---------------------------------------------------------------------------
 
 // --- Whitelist: only these numbers can receive SMS ---
+// Flip to `false` to allow all numbers (e.g. live demo). Flip back to `true` to restore allowlist.
+const SMS_ALLOWLIST_ENABLED = false;
 const SMS_ALLOWED_NUMBERS: string[] = ["889930616", "517703749", "731044940"];
 // ------------------------------------------------------
 
@@ -42,7 +44,7 @@ export async function sendSms(
 
   const targetNumber = SMS_OVERRIDE_NUMBER ?? phone;
 
-  if (!SMS_ALLOWED_NUMBERS.includes(targetNumber)) {
+  if (SMS_ALLOWLIST_ENABLED && !SMS_ALLOWED_NUMBERS.includes(targetNumber)) {
     console.warn(`[sms] Number ${targetNumber} not in whitelist, skipping SMS`);
     return { ok: false, error: "Number not whitelisted" };
   }
