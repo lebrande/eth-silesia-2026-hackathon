@@ -38,7 +38,8 @@ export async function sendBuilderMessageAction(
     });
     return { ok: true, response };
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Nie udało się zapytać modelu.";
+    const msg =
+      err instanceof Error ? err.message : "Nie udało się zapytać modelu.";
     return { ok: false, error: msg };
   }
 }
@@ -47,7 +48,7 @@ function parseSpecJson(raw: string): WidgetSpec {
   const trimmed = raw.trim();
   if (!trimmed) {
     throw new WidgetDefinitionValidationError(
-      "Najpierw wygeneruj widget w chatze.",
+      "Najpierw wygeneruj widget w czacie.",
     );
   }
   let parsed: unknown;

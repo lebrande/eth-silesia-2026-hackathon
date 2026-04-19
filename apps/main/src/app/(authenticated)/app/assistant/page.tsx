@@ -17,10 +17,6 @@ export default function AssistantPage() {
           <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
         </summary>
         <div className="space-y-3 border-t border-border px-4 py-3 text-sm">
-          <p className="text-xs text-muted-foreground">
-            Agent jest podpięty do tej samej bazy co reszta backoffice.
-            Wszystkie akcje zapisują się natychmiast w Postgresie.
-          </p>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <Section
               title="FAQ"

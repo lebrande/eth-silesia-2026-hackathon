@@ -18,7 +18,7 @@ export default function NewWidgetPage() {
         </Link>
         <PageHeader
           title="Nowy widget"
-          description="Opisz scenariusz klienta w chatze z lewej strony. Widget pojawia się natychmiast w podglądzie telefonu po prawej — tak go zobaczy klient na tauron.pl."
+          description="Opisz scenariusz klienta w czacie z lewej strony. Widget pojawia się natychmiast w podglądzie telefonu po prawej — tak go zobaczy klient na tauron.pl."
         />
       </div>
 

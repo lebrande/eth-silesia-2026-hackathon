@@ -36,7 +36,7 @@ export default async function ConversationsPage({
     <div className="space-y-6">
       <PageHeader
         title="Rozmowy"
-        description="Historia rozmów klientów z AI. Każdy wiersz to jeden wątek (thread) LangGraph. Kliknij, aby zobaczyć pełen przebieg."
+        description="Historia rozmów klientów z AI. Kliknij, aby zobaczyć pełen przebieg."
       />
 
       <Card>
@@ -76,7 +76,12 @@ export default async function ConversationsPage({
                 </label>
               ))}
             </div>
-            <button type="submit" className="hidden" aria-hidden tabIndex={-1} />
+            <button
+              type="submit"
+              className="hidden"
+              aria-hidden
+              tabIndex={-1}
+            />
           </form>
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
