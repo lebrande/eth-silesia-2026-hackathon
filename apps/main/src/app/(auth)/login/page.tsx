@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { BRAND } from "@/branding/config";
 import { BrandLogo } from "@/components/brand-logo";
 import { LoginForm } from "@/components/auth/login-form";
+import loginBackground from "@/branding/logog_background.png";
 
 export default async function LoginPage() {
   const session = await auth();
@@ -12,7 +13,8 @@ export default async function LoginPage() {
     <div className="relative isolate flex min-h-screen items-center justify-center bg-primary/10 px-4 py-10">
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[url('/login-bg.jpg')] bg-cover bg-center"
+        className="absolute inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url(${loginBackground.src})` }}
       />
       <div
         aria-hidden
