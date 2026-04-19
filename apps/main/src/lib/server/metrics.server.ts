@@ -7,7 +7,6 @@ import {
   messageFlags,
   widgetDefinitions,
 } from "@/db/schema";
-import { ensureBackofficeTables } from "@/db/ensure-tables";
 import {
   getLastUserQuestion,
   getUserQuestionBeforeMessage,
@@ -83,7 +82,6 @@ function countWidgetKinds(specs: WidgetSpec[]): WidgetKindUsage[] {
 }
 
 export async function buildDashboard(): Promise<DashboardSnapshot> {
-  await ensureBackofficeTables();
   const [
     [totalConv],
     [today],

@@ -79,7 +79,7 @@ export function SaveBar(
         <div className="text-xs text-muted-foreground">
           {spec
             ? "Widget gotowy do zapisu."
-            : "Najpierw opisz scenariusz w chatze — builder wygeneruje widget."}
+            : "Najpierw opisz scenariusz w czacie — builder wygeneruje widget."}
         </div>
         <div className="flex items-center gap-2">
           {props.mode === "edit" && props.onDelete ? (

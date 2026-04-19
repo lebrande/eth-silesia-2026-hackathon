@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { BRAND } from "@/branding/config";
+import homeBackground from "@/branding/logog_background.png";
 
 export default function Home() {
   return (
@@ -11,11 +12,12 @@ export default function Home() {
         <section className="relative isolate overflow-hidden bg-primary/15 px-6 py-20 md:py-28">
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 bg-[url('/hero.jpg')] bg-cover bg-center"
+            className="absolute inset-0 -z-10 bg-cover bg-center"
+            style={{ backgroundImage: `url(${homeBackground.src})` }}
           />
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/35 to-black/20"
+            className="absolute inset-0 -z-10 bg-linear-to-b from-black/55 via-black/35 to-black/20"
           />
           <div className="mx-auto max-w-3xl text-center text-white">
             <h1 className="mb-4 text-4xl font-semibold md:text-5xl">

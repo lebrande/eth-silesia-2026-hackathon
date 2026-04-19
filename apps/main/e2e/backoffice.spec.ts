@@ -132,7 +132,7 @@ test.describe("Backoffice — FAQ + Widget builder", () => {
     await expect(saveBtn).toBeDisabled();
     await expect(
       page.getByText(
-        "Najpierw opisz scenariusz w chatze — builder wygeneruje widget.",
+        "Najpierw opisz scenariusz w czacie — builder wygeneruje widget.",
       ),
     ).toBeVisible();
 

@@ -15,6 +15,7 @@ All Playwright infrastructure is already in place from FSN-0020 (`apps/main/play
 - **Auth fallback** — `apps/main/src/auth.ts:10-11,64-67` accepts the hardcoded admin credentials `BRAND.auth.adminEmail` (= `"admin@tauron.pl"`, see `apps/main/src/branding/config.ts:23`) / `"admin"` if the DB row is missing. The E2E spec uses these credentials so it works without running `db:seed-user` first.
 
   Note: the staged FSN-0021 ticket (`thoughts/plans/2026-04-18-FSN-0021-ui-tweaks.md` Phase 3) is the change that swapped the inline form for `LoginForm`. This plan assumes those staged changes are landed by the time the E2E spec runs (they are already on master in your working tree, just not pushed). If for any reason FSN-0021 is reverted before this ticket lands, swap the submit selector back to `"Sign in"` and confirm credentials default to `admin@ethsilesia.pl`.
+
 - **Sidebar nav** (`apps/main/src/components/layout/sidebar.tsx:17-24`) has links labelled `"Baza wiedzy (FAQ)"` (`/app/faq`) and `"Widgety agenta"` (`/app/tools`). Active route highlighted with `bg-primary/10 text-primary`.
 - **FAQ list** (`apps/main/src/app/(authenticated)/app/faq/page.tsx`):
   - Header title: `"Baza wiedzy (FAQ)"`.
@@ -37,7 +38,7 @@ All Playwright infrastructure is already in place from FSN-0020 (`apps/main/play
   - 6 suggestion chips (deterministic text — see `builder-chat.tsx:20-27`). Clicking a chip dispatches it as a user message immediately.
   - Builder textarea: `placeholder="Opisz scenariusz klienta (Enter wysyła, Shift+Enter nowa linia)…"`. Send via Enter or **"Wyślij"** button.
   - `SaveBar` inputs: `input[name="name"]`, `input[name="description"]`. Submit: **"Zapisz widget"** (create) — `disabled={!spec || pending}` (`save-bar.tsx:35,95`). The `disabled→enabled` transition is the deterministic "LLM finished, spec produced" signal.
-  - Status text below inputs: `"Najpierw opisz scenariusz w chatze — builder wygeneruje widget."` (no spec) / `"Widget gotowy do zapisu."` (spec ready).
+  - Status text below inputs: `"Najpierw opisz scenariusz w czacie — builder wygeneruje widget."` (no spec) / `"Widget gotowy do zapisu."` (spec ready).
   - On save the action redirects to `/app/tools/{uuid}` (`apps/main/src/lib/actions/widget-builder.action.ts:73-95`).
 
 ### Key discoveries
@@ -177,8 +178,7 @@ test.describe("Backoffice — FAQ + Widget builder", () => {
     const widgetName = `E2E Widget — porównanie taryf (${ts})`;
     const widgetDescription =
       "Pokazuje 3 taryfy z rocznym kosztem, gdy klient pyta o porównanie cen.";
-    const scenarioPrompt =
-      "Porównanie 3 taryf (G11/G12/G13) z rocznym kosztem";
+    const scenarioPrompt = "Porównanie 3 taryf (G11/G12/G13) z rocznym kosztem";
 
     await loginAsAdmin(page);
 
@@ -199,7 +199,7 @@ test.describe("Backoffice — FAQ + Widget builder", () => {
     await expect(saveBtn).toBeDisabled();
     await expect(
       page.getByText(
-        "Najpierw opisz scenariusz w chatze — builder wygeneruje widget.",
+        "Najpierw opisz scenariusz w czacie — builder wygeneruje widget.",
       ),
     ).toBeVisible();
 

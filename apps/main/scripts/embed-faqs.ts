@@ -6,9 +6,9 @@
  *   pnpm -F main embed-faqs          # tylko wpisy bez embeddingu
  *   pnpm -F main embed-faqs --force  # re-embed dla wszystkich
  *
- * Skrypt jest idempotentny. Na starcie zapewnia extension + kolumnę +
- * indeks (dubluje logikę z scripts/ensure-tables.ts, żeby można było
- * uruchomić bez uprzedniego db:ensure-tables).
+ * Wymaga uruchomionych migracji drizzle-kit (pnpm db:migrate) —
+ * migracja 0005 instaluje pgvector, dodaje kolumnę `embedding` oraz
+ * indeks ivfflat.
  */
 import path from "node:path";
 import { config as loadEnv } from "dotenv";
@@ -48,17 +48,6 @@ async function main() {
 
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(pool, { schema: schemaMod });
-
-  await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
-  await db.execute(sql`
-    ALTER TABLE "faq_entries"
-      ADD COLUMN IF NOT EXISTS "embedding" vector(1536)
-  `);
-  await db.execute(sql`
-    CREATE INDEX IF NOT EXISTS "faq_entries_embedding_idx"
-      ON "faq_entries" USING ivfflat ("embedding" vector_cosine_ops)
-      WITH (lists = 100)
-  `);
 
   const embeddings = new OpenAIEmbeddings({
     model: EMBEDDING_MODEL,

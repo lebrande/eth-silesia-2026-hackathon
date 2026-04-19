@@ -22,7 +22,7 @@ export default async function ToolsListPage() {
     <div className="space-y-6">
       <PageHeader
         title="Widgety agenta"
-        description="Kompozycje wizualne, które agent klienta może pokazać w chacie na tauron.pl. Opisujesz scenariusz w chatze z buildem, a widget generuje się automatycznie."
+        description="Kompozycje wizualne, które agent klienta może pokazać w chacie na tauron.pl. Opisujesz scenariusz w czacie z buildem, a widget generuje się automatycznie."
         actions={
           <Button asChild>
             <Link href="/app/tools/new">
@@ -55,8 +55,8 @@ export default async function ToolsListPage() {
         <CardHeader>
           <CardTitle>Lista widgetów</CardTitle>
           <CardDescription>
-            Każdy widget to zapisana definicja (kompozycja klocków), którą
-            agent klienta może wyrenderować w odpowiedzi.
+            Każdy widget to zapisana definicja (kompozycja klocków), którą agent
+            klienta może wyrenderować w odpowiedzi.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">

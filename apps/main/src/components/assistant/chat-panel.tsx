@@ -158,7 +158,7 @@ export function AssistantChatPanel({
           <div className="min-w-0">
             <div className="text-sm font-semibold">Asystent backoffice</div>
             <div className="truncate text-[11px] text-muted-foreground font-mono">
-              thread: {shownThread}
+              {shownThread}
             </div>
           </div>
         </div>
