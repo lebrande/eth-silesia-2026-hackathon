@@ -1,6 +1,7 @@
 import { logoutAction } from "@/lib/actions/auth.action";
 import { LogOut } from "lucide-react";
 import type { BackofficeUser } from "@/lib/types";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 export function Topbar({ user, title }: { user: BackofficeUser; title?: string }) {
   const label = user.name || user.email || "user";
@@ -13,7 +14,8 @@ export function Topbar({ user, title }: { user: BackofficeUser; title?: string }
     .toUpperCase();
 
   return (
-    <header className="h-14 shrink-0 border-b border-border bg-card/60 backdrop-blur-sm flex items-center px-4 md:px-6 gap-4">
+    <header className="h-14 shrink-0 border-b border-border bg-card/60 backdrop-blur-sm flex items-center px-3 md:px-6 gap-3 md:gap-4">
+      <MobileNav />
       <div className="flex-1 min-w-0">
         {title ? (
           <h1 className="text-base font-semibold tracking-tight truncate">
