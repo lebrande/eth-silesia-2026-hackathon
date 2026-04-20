@@ -1,0 +1,53 @@
+Title: Mój Tauron AI — AI Energy Advisor for TAURON (ETH Silesia 2026)
+
+Description:
+
+Mój Tauron AI — a working prototype of the 24/7 virtual contact center that TAURON Polska Energia's own 2030 strategy calls for. Built at the ETH Silesia 2026 hackathon.
+
+January 2026. Poland's energy price freeze ends. Bills jump overnight, call centers queue for hours. Mój Tauron AI replaces the form, the hold music, and the queue — with a single conversation.
+
+Two demos in one video:
+— Customer view: Anna Kowalska asks why her bill spiked, verifies by SMS, sees a 36-month chart, compares tariffs, signs a new contract with mObywatel. No form. No phone call. No redirect.
+— Backoffice view: a TAURON operator corrects the agent with a live FAQ (vector-embedded on save) and builds a new widget from one plain-language brief. No code, no release cycle.
+
+── Timestamps ──
+
+Customer demo
+00:00  Opening — why this exists
+00:20  Landing page and meeting Anna Kowalska
+00:40  Turn 1 — G11 vs G12, answered with no login required
+01:05  Turn 2 — SMS challenge and 36-month consumption timeline
+01:40  Turn 3 — tariff comparison card, G13 recommended
+02:05  Turn 4 — contract draft and mObywatel signing
+02:40  Close
+
+Backoffice demo
+03:00  Opening — why a backoffice
+03:20  Feature 1 — dynamic FAQ with AI-drafted answers
+03:50  Feature 2 — visual widget builder
+04:40  Close
+
+── Stack ──
+
+Next.js 16 (App Router) · LangGraph · LiteLLM · Drizzle ORM + Postgres · Auth.js v5 (JWT) · ElevenLabs TTS · BulkGate SMS · Railway · TypeScript strict · pnpm workspaces · LangSmith observability
+
+── What makes this more than a Q&A bot ──
+
+— Widgets, not walls of text. Structured JSON from the LLM renders as charts, comparators, and a contract-signing widget with mObywatel built in.
+— Compliance as architecture. Four file-suffix rules (*.server.ts, *.action.ts, *.shared.ts, *.client.ts) make secrets physically incapable of reaching the client bundle. SMS OTP is a hard gate before any personal data is touched. The LLM is boxed into a typed response enum — prompt injection cannot unlock tools.
+— Polish by default, with an optional Silesian dialect toggle.
+
+── Sponsor tracks addressed ──
+
+— TAURON AI Challenge — advanced chatbot + energy tools + CS innovation
+— AKMF (Security by Design) — compile-time secret gating, SMS OTP, LLM response enum, OWASP Top 10 mapping, LangSmith audit trail
+— ETHLegal & LegalTech — GDPR + EU AI Act wired into the stack
+— Katowicki.hub — a regional product, not a generic SaaS
+
+── Links ──
+
+Source code:  https://github.com/korzewski/eth-silesia-2026-hackathon
+Event:        ETH Silesia Hackathon 2026
+Built by:     Kuba Pusiak and team
+
+#ETHSilesia #Hackathon #LangGraph #NextJS #TAURON #AIAgent #EnergyTech

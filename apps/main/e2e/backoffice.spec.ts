@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { holdForClip, recordClipForTeardown } from "./clips.shared";
 
 // Mirrors BRAND.auth.adminEmail in apps/main/src/branding/config.ts and the
 // hardcoded fallback in apps/main/src/auth.ts. The login form prefills both
@@ -34,9 +35,7 @@ async function waitForSpec(
   const sendBtn = page.getByRole("button", { name: "Wyślij" });
 
   for (let attempt = 0; attempt <= maxNudges; attempt++) {
-    // Wait for the LLM call to complete — input becomes re-enabled.
     await expect(builderInput).toBeEnabled({ timeout: LLM_TIMEOUT });
-    // Small settle window for React state to flush.
     if (await saveBtn.isEnabled()) return;
     if (attempt === maxNudges) break;
 
@@ -49,10 +48,21 @@ async function waitForSpec(
   await expect(saveBtn).toBeEnabled({ timeout: LLM_TIMEOUT });
 }
 
-test.describe("Backoffice — FAQ + Widget builder", () => {
+test.describe("backoffice demo clips", () => {
   test.setTimeout(5 * 60_000);
 
-  test("creates a new FAQ entry with AI-suggested answer", async ({ page }) => {
+  test.afterEach(async ({}, testInfo) => {
+    await recordClipForTeardown(testInfo);
+  });
+
+  test("backoffice-01-opening-why-a-backoffice", async ({ page }) => {
+    const startedAt = Date.now();
+    await loginAsAdmin(page);
+    await holdForClip(page, startedAt, "backoffice-01-opening-why-a-backoffice");
+  });
+
+  test("backoffice-02-feature-1-dynamic-faq", async ({ page }) => {
+    const startedAt = Date.now();
     const ts = Date.now();
     const question = `E2E FAQ — jak zmienić taryfę z G11 na G13? (${ts})`;
 
@@ -92,9 +102,12 @@ test.describe("Backoffice — FAQ + Widget builder", () => {
     await page.getByRole("link", { name: "Baza wiedzy (FAQ)" }).click();
     await expect(page).toHaveURL(/\/app\/faq$/);
     await expect(page.getByText(question)).toBeVisible();
+
+    await holdForClip(page, startedAt, "backoffice-02-feature-1-dynamic-faq");
   });
 
-  test("builds and saves a new widget via the AI builder", async ({ page }) => {
+  test("backoffice-03-feature-2-widget-builder", async ({ page }) => {
+    const startedAt = Date.now();
     const ts = Date.now();
     const widgetName = `E2E Widget — porównanie taryf (${ts})`;
     const widgetDescription =
@@ -136,18 +149,12 @@ test.describe("Backoffice — FAQ + Widget builder", () => {
       ),
     ).toBeVisible();
 
-    // Type into the builder textarea directly and submit via the "Wyślij"
-    // button — more reliable than the suggestion chips which send shorter
-    // text that the LLM treats as ambiguous.
     const builderInput = page.locator(
       'textarea[placeholder*="Opisz scenariusz klienta"]',
     );
     await builderInput.fill(builderPrompt);
     await page.getByRole("button", { name: "Wyślij" }).click();
 
-    // Wait for either the spec to populate (button enables) or the LLM to
-    // come back with a clarifying question (textarea is re-enabled and
-    // empty). If it asks for clarification, nudge it to just build.
     await waitForSpec(page, saveBtn);
 
     await expect(page.getByText("Widget gotowy do zapisu.")).toBeVisible();
@@ -163,5 +170,13 @@ test.describe("Backoffice — FAQ + Widget builder", () => {
     await page.getByRole("link", { name: "Widgety agenta" }).click();
     await expect(page).toHaveURL(/\/app\/tools$/);
     await expect(page.getByText(widgetName)).toBeVisible();
+
+    await holdForClip(page, startedAt, "backoffice-03-feature-2-widget-builder");
+  });
+
+  test("backoffice-04-close", async ({ page }) => {
+    const startedAt = Date.now();
+    await loginAsAdmin(page);
+    await holdForClip(page, startedAt, "backoffice-04-close");
   });
 });

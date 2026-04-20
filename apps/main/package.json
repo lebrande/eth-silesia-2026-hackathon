@@ -21,6 +21,7 @@
     "test:silesian": "tsx scripts/test-silesian.ts",
     "test:e2e": "playwright test",
     "test:e2e:backoffice": "playwright test backoffice",
+    "test:e2e:clips": "playwright test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
